@@ -33,7 +33,7 @@ export const radiologyDashboard = getSyncLifecycle(ImagingOrders, options);
 export const imagingOrdersLink = getSyncLifecycle(
   createLeftPanelLink({
     name: 'imaging-orders',
-    title: 'Radiology and Imaging',
+    title: 'radiologyAndImaging',
   }),
   options,
 );
