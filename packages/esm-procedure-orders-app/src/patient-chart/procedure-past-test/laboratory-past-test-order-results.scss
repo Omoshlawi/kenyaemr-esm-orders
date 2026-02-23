@@ -1,7 +1,7 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/colors';
 @use '@carbon/styles/scss/type';
-@use '@openmrs/esm-styleguide/src/vars' as *;
+@use '@carbon/colors';
 @use '../../root.scss' as *;
 
 .widgetCard {
@@ -16,8 +16,8 @@
 }
 
 .tileContainer {
-  background-color: $ui-02;
-  border-top: 1px solid $ui-03;
+  background-color: colors.$white;
+  border-top: 1px solid colors.$gray-20;
   padding: 5rem 0;
 }
 
@@ -34,29 +34,29 @@
 
 .content {
   @include type.type-style('heading-compact-02');
-  color: $text-02;
+  color: colors.$gray-70;
   margin-bottom: 0.5rem;
 }
 
 .helper {
   @include type.type-style('body-compact-01');
-  color: $text-02;
+  color: colors.$gray-70;
 }
 
 .container {
-  background-color: $ui-01;
+  background-color:colors.$gray-10;
 }
 
 .separator {
   @include type.type-style('body-compact-02');
-  color: $text-02;
+  color: colors.$gray-70;
   width: 80%;
   margin: 1.5rem auto;
   overflow: hidden;
   text-align: center;
   &::before,
   &::after {
-    background-color: $text-03;
+    background-color: colors.$gray-40
     content: '';
     display: inline-block;
     height: 1px;

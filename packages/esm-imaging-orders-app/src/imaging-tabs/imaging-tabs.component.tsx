@@ -1,19 +1,28 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { TabPanels, TabList, Tabs, Tab, TabPanel } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useOrdersWorkList } from '../hooks/useOrdersWorklist';
-
-import { TestsOrdered } from './test-ordered/tests-ordered.component';
-import WorkList from './work-list/work-list.component';
-import { ReferredTests } from './referred-test/referred-ordered.component';
-import { Review } from './review-ordered/review-ordered.component';
-import { ApprovedOrders } from './approved/approved-orders.component';
-import { OrdersNotDone } from './orders-not-done/orders-not-done.component';
 import { useImagingOrderStats } from '../shared/imaging.resource';
 
 import styles from './imaging-tabs.scss';
-import ImagingOrderSearch from './search/imaging-order-search.component';
+
+// Lazy-load tab content to reduce initial bundle size
+const ImagingOrderSearch = lazy(() => import('./search/imaging-order-search.component'));
+const TestsOrdered = lazy(() =>
+  import('./test-ordered/tests-ordered.component').then((m) => ({ default: m.TestsOrdered })),
+);
+const WorkList = lazy(() => import('./work-list/work-list.component'));
+const ReferredTests = lazy(() =>
+  import('./referred-test/referred-ordered.component').then((m) => ({ default: m.ReferredTests })),
+);
+const Review = lazy(() =>
+  import('./review-ordered/review-ordered.component').then((m) => ({ default: m.Review })),
+);
+const ApprovedOrders = lazy(() =>
+  import('./approved/approved-orders.component').then((m) => ({ default: m.ApprovedOrders })),
+);
+const OrdersNotDone = lazy(() => import('./orders-not-done/orders-not-done.component'));
 
 export const ImagingTabs: React.FC = () => {
   const { t } = useTranslation();
@@ -23,12 +32,7 @@ export const ImagingTabs: React.FC = () => {
   const { pendingReviewCount, approvedOrdersCount } = useCompletedOrders();
 
   const searchTab = [
-    {
-      label: 'search',
-      text: t('search', 'Search'),
-      count: 0,
-      component: <ImagingOrderSearch />,
-    },
+    { label: 'search', text: t('search', 'Search'), count: 0, LazyComponent: ImagingOrderSearch, componentProps: {} },
   ];
 
   const tabsData = [
@@ -37,27 +41,43 @@ export const ImagingTabs: React.FC = () => {
       label: 'pendingOrders',
       text: t('activeOrders', 'Active Orders'),
       count: activeOrdersCount,
-      component: <TestsOrdered />,
+      LazyComponent: TestsOrdered,
+      componentProps: {},
     },
     {
       label: 'workList',
       text: t('workList', 'WorkList'),
       count: workListCount,
-      component: <WorkList fulfillerStatus="IN_PROGRESS" />,
+      LazyComponent: WorkList,
+      componentProps: { fulfillerStatus: 'IN_PROGRESS' as const },
     },
     {
       label: 'referredProcedures',
       text: t('referredOut', 'Referred Out'),
       count: referredTestsCount,
-      component: <ReferredTests />,
+      LazyComponent: ReferredTests,
+      componentProps: {},
     },
-    { label: 'review', text: t('pendingReview', 'Pending Review'), count: pendingReviewCount, component: <Review /> },
-    { label: 'approved', text: t('approved', 'Approved'), count: approvedOrdersCount, component: <ApprovedOrders /> },
+    {
+      label: 'review',
+      text: t('pendingReview', 'Pending Review'),
+      count: pendingReviewCount,
+      LazyComponent: Review,
+      componentProps: {},
+    },
+    {
+      label: 'approved',
+      text: t('approved', 'Approved'),
+      count: approvedOrdersCount,
+      LazyComponent: ApprovedOrders,
+      componentProps: {},
+    },
     {
       label: 'notDone',
       text: t('notDone', 'Not Done'),
       count: ordersNotDoneCount,
-      component: <OrdersNotDone fulfillerStatus="DECLINED" />,
+      LazyComponent: OrdersNotDone,
+      componentProps: { fulfillerStatus: 'DECLINED' as const },
     },
   ];
 
@@ -72,8 +92,14 @@ export const ImagingTabs: React.FC = () => {
           ))}
         </TabList>
         <TabPanels>
-          {tabsData.map(({ label, component }) => (
-            <TabPanel key={label}>{component}</TabPanel>
+          {tabsData.map(({ label, LazyComponent, componentProps }) => (
+            <TabPanel key={label}>
+              <Suspense fallback={null}>
+                {/* LazyComponent + componentProps are paired per tab; cast needed for union in map */}
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                <LazyComponent {...(componentProps as any)} />
+              </Suspense>
+            </TabPanel>
           ))}
         </TabPanels>
       </Tabs>

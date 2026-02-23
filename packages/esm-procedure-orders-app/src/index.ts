@@ -2,19 +2,6 @@ import { getAsyncLifecycle, defineConfigSchema, getSyncLifecycle } from '@openmr
 
 import { configSchema } from './config-schema';
 import { createLeftPanelLink } from './left-panel-link';
-import workListProcedures from './procedure-tabs/work-list-tab.component';
-import referredProcedures from './procedure-tabs/referred-tab.component';
-import completedProcedures from './procedure-tabs/completed-tab.component';
-import notDoneProcedures from './procedure-tabs/not-done-tab.component';
-import addProcedureToWorklistDialog from './procedures-ordered/pick-procedure-order/add-to-worklist-dialog.component';
-import procedureInstructionsModal from './procedures-ordered/procedure-instructions/procedure-instructions.component';
-import ProceduresOrderBasketPanelExtension from './form/procedures-orders/procedures-order-basket-panel/procedures-order-basket-panel.extension';
-import rejectProcedureOrderDialog from './procedures-ordered/reject-order-dialog/reject-procedure-order-dialog.component';
-import procedureRejectReasonModal from './procedures-ordered/reject-reason/procedure-reject-reason.component';
-import PostProcedureForm from './form/post-procedures/post-procedure-form.component';
-import PrintPreviewModal from './print/print-procedure-results.component';
-import Procedure from './procedure.component';
-import SearchPatientWorkspace from './form/search-patient-workspace/search-patient.workspace';
 
 const moduleName = '@kenyaemr/esm-procedure-orders-app';
 
@@ -30,7 +17,7 @@ export function startupApp() {
 }
 
 export const root = getAsyncLifecycle(() => import('./root.component'), options);
-export const expressProceduresDashboard = getSyncLifecycle(Procedure, options);
+export const expressProceduresDashboard = getAsyncLifecycle(() => import('./procedure.component'), options);
 
 // t('Procedures', 'Procedures')
 export const procedureDashboardLink = getSyncLifecycle(
@@ -41,21 +28,52 @@ export const procedureDashboardLink = getSyncLifecycle(
   options,
 );
 
-// Modals
-export const rejectProcedureOrderDialogComponent = getSyncLifecycle(rejectProcedureOrderDialog, options);
+// Modals and tab components (lazy-loaded to reduce initial bundle size)
+export const rejectProcedureOrderDialogComponent = getAsyncLifecycle(
+  () => import('./procedures-ordered/reject-order-dialog/reject-procedure-order-dialog.component'),
+  options,
+);
+export const worklistProceduresTabComponent = getAsyncLifecycle(
+  () => import('./procedure-tabs/work-list-tab.component'),
+  options,
+);
+export const referredProceduresTabComponent = getAsyncLifecycle(
+  () => import('./procedure-tabs/referred-tab.component'),
+  options,
+);
+export const completedProceduresTabComponent = getAsyncLifecycle(
+  () => import('./procedure-tabs/completed-tab.component'),
+  options,
+);
+export const notDoneProceduresTabComponent = getAsyncLifecycle(
+  () => import('./procedure-tabs/not-done-tab.component'),
+  options,
+);
+export const procedureInstructionsModalComponent = getAsyncLifecycle(
+  () => import('./procedures-ordered/procedure-instructions/procedure-instructions.component'),
+  options,
+);
+export const procedureRejectModalComponent = getAsyncLifecycle(
+  () => import('./procedures-ordered/reject-reason/procedure-reject-reason.component'),
+  options,
+);
+export const addProcedureToWorklistDialogComponent = getAsyncLifecycle(
+  () => import('./procedures-ordered/pick-procedure-order/add-to-worklist-dialog.component'),
+  options,
+);
 
-export const worklistProceduresTabComponent = getSyncLifecycle(workListProcedures, options);
-
-export const referredProceduresTabComponent = getSyncLifecycle(referredProcedures, options);
-export const completedProceduresTabComponent = getSyncLifecycle(completedProcedures, options);
-export const notDoneProceduresTabComponent = getSyncLifecycle(notDoneProcedures, options);
-export const procedureInstructionsModalComponent = getSyncLifecycle(procedureInstructionsModal, options);
-export const procedureRejectModalComponent = getSyncLifecycle(procedureRejectReasonModal, options);
-export const addProcedureToWorklistDialogComponent = getSyncLifecycle(addProcedureToWorklistDialog, options);
-
-export const proceduresOrderPanel = getSyncLifecycle(ProceduresOrderBasketPanelExtension, options);
-export const postProcedureResults = getSyncLifecycle(PostProcedureForm, options);
-export const printProcedureReportModal = getSyncLifecycle(PrintPreviewModal, options);
+export const proceduresOrderPanel = getAsyncLifecycle(
+  () => import('./form/procedures-orders/procedures-order-basket-panel/procedures-order-basket-panel.extension'),
+  options,
+);
+export const postProcedureResults = getAsyncLifecycle(
+  () => import('./form/post-procedures/post-procedure-form.component'),
+  options,
+);
+export const printProcedureReportModal = getAsyncLifecycle(
+  () => import('./print/print-procedure-results.component'),
+  options,
+);
 
 // t('addProcedureOrderWorkspaceTitle', 'Add procedure order')
 export const addProceduresOrderWorkspace = getAsyncLifecycle(
@@ -66,4 +84,7 @@ export const procedureResultsComponent = getAsyncLifecycle(
   () => import('./procedure-results/procedure-results.component'),
   options,
 );
-export const procedureOrderSearchPatientWorkspace = getSyncLifecycle(SearchPatientWorkspace, options);
+export const procedureOrderSearchPatientWorkspace = getAsyncLifecycle(
+  () => import('./form/search-patient-workspace/search-patient.workspace'),
+  options,
+);

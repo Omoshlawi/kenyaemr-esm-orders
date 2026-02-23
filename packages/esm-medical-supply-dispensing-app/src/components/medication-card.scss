@@ -1,6 +1,6 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
-@use '@openmrs/esm-styleguide/src/vars' as *;
+@use '@carbon/colors';
 
 .medicationTile {
   display: flex;
@@ -11,7 +11,7 @@
   padding: 0 8px 0 8px;
   background-color: #fff;
   border-left: 4px solid var(--brand-03);
-  color: $text-02;
+  color: colors.$gray-70;
   margin-bottom: 1rem !important;
 }
 

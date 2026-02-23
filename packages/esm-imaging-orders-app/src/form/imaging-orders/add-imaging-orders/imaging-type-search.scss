@@ -1,7 +1,6 @@
 @use '@carbon/layout';
 @use '@carbon/type';
-@use '@openmrs/esm-styleguide/src/vars' as *;
-
+@use '@carbon/colors';
 /** For TestTypeSearchResults */
 
 .container {
@@ -10,7 +9,7 @@
 
 .divider {
   border: 0;
-  border-top: 1px solid $color-gray-30;
+  border-top: 1px solid colors.$cool-gray-70;
   width: 66%;
 }
 
@@ -24,7 +23,7 @@
 
 .searchResultsCount {
   @include type.type-style('body-compact-01');
-  color: $text-02;
+  color: colors.$gray-70;
 }
 
 .orderBasketSearchResultsHeader {
@@ -41,7 +40,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid $grey-2;
+  border: 1px solid colors.$gray-20;
   &:not(:last-of-type) {
     margin-bottom: layout.$spacing-03;
   }
@@ -49,7 +48,7 @@
 
 .tabletSearchResultTile {
   margin-top: 5px;
-  background-color: $ui-02;
+  background-color: colors.$white;
 }
 
 .searchResultTileContent {
@@ -57,7 +56,7 @@
 }
 
 .searchResultActions {
-  border-top: 1px solid $grey-2;
+  border-top: 1px solid colors.$gray-20;
   padding: 0 layout.$spacing-05;
   display: flex;
   justify-content: flex-end;
@@ -86,17 +85,17 @@
   justify-content: center;
   align-items: center;
   padding: layout.$spacing-07;
-  border: 1px solid $ui-03;
+  border: 1px solid colors.$gray-20;
   text-align: center;
-  background-color: $ui-01;
+  background-color:colors.$gray-10;
 }
 
 :global(.omrs-breakpoint-lt-small-desktop) .emptyState {
-  background-color: $ui-02;
+  background-color: colors.$white;
 }
 
 .link {
-  color: $interactive-01;
+  color: colors.$blue-60;
   text-decoration: underline;
   cursor: pointer;
 }
@@ -110,6 +109,6 @@
 }
 
 .resultsContainer::-webkit-scrollbar-thumb {
-  background: $ui-04;
+  background: colors.$gray-50;
   border-radius: layout.$spacing-02;
 }

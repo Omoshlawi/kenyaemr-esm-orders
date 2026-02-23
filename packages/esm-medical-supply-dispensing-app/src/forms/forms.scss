@@ -1,22 +1,22 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
-@use '@openmrs/esm-styleguide/src/vars' as *;
+@use '@carbon/colors';
 
 // TO DO Move this styles to style - guide
 // https://github.com/openmrs/openmrs-esm-core/blob/master/packages/framework/esm-styleguide/src/_vars.scss
 $color-blue-30: #a6c8ff;
 
 .productiveHeading02 {
-  color: $color-gray-70;
+  color: colors.$cool-gray-70;
   @include type.type-style('productive-heading-02');
 }
 
 :global(.omrs-breakpoint-lt-desktop) .formWrapper {
-  background-color: $openmrs-background-grey;
+  background-color: colors.$gray-20;
 }
 
 :global(.omrs-breakpoint-gt-tablet) .formWrapper {
-  background-color: $ui-02;
+  background-color: colors.$white;
 }
 
 .formGroup {
@@ -46,7 +46,7 @@ $color-blue-30: #a6c8ff;
 .patientInfo {
   position: sticky;
   z-index: 1000;
-  background-color: $ui-02;
+  background-color: colors.$white;
   top: 3rem;
   overflow-y: auto;
 }
@@ -91,7 +91,7 @@ $color-blue-30: #a6c8ff;
 
 :global(.omrs-breakpoint-lt-desktop) .buttonGroup {
   padding: spacing.$spacing-05 spacing.$spacing-06;
-  background-color: $ui-02;
+  background-color: colors.$white;
 }
 
 .buttonGroup button {
@@ -110,7 +110,7 @@ $color-blue-30: #a6c8ff;
 }
 
 .contentSwitcherWrapper > div > button {
-  background-color: $ui-02;
+  background-color: colors.$white;
 }
 
 .contentSwitcherWrapper > div button:first-child {
@@ -131,18 +131,18 @@ $color-blue-30: #a6c8ff;
 
 .contentSwitcherWrapper > div > button[aria-selected='true'],
 .contentSwitcherWrapper > div > button[aria-selected='true']:first-child {
-  background-color: $color-blue-10;
-  color: $color-blue-60-2;
-  border-color: $color-blue-60-2;
-  border-right: 1px solid $color-blue-60-2;
+  background-color: colors.$blue-10;
+  color: colors.$blue-60;
+  border-color: colors.$blue-60;
+  border-right: 1px solid colors.$blue-60;
 }
 
 .contentSwitcherWrapper > div > button[aria-selected='true'],
 .contentSwitcherWrapper > div > button[aria-selected='true']:last-child {
-  background-color: $color-blue-10;
-  color: $color-blue-60-2;
-  border-color: $color-blue-60-2;
-  border-left: 1px solid $color-blue-60-2;
+  background-color: colors.$blue-10;
+  color: colors.$blue-60;
+  border-color: colors.$blue-60;
+  border-left: 1px solid colors.$blue-60;
 }
 
 .contentSwitcherWrapper > div > button[aria-selected='true']:focus {

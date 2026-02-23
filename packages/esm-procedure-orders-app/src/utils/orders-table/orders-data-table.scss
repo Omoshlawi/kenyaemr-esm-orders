@@ -1,10 +1,10 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
-@use '@openmrs/esm-styleguide/src/vars' as *;
+@use '@carbon/colors';
 @use '../../root.scss' as *;
 
 .tableContainer {
-  background-color: $ui-01;
+  background-color:colors.$gray-10;
   margin: 0 spacing.$spacing-05;
   padding: 0;
 
@@ -13,11 +13,11 @@
   }
 
   th {
-    color: $text-02;
+    color: colors.$gray-70;
   }
 
   :global(.cds--data-table) {
-    background-color: $ui-03;
+    background-color: colors.$gray-20;
   }
 
   .toolbarContent {
@@ -27,8 +27,8 @@
 }
 
 .tileContainer {
-  background-color: $ui-02;
-  border-top: 1px solid $ui-03;
+  background-color: colors.$white;
+  border-top: 1px solid colors.$gray-20;
   padding: 5rem 0;
 }
 
@@ -45,6 +45,6 @@
 
 .content {
   @include type.type-style('heading-compact-02');
-  color: $text-02;
+  color: colors.$gray-70;
   margin-bottom: 0.5rem;
 }

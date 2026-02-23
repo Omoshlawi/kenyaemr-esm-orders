@@ -1,6 +1,6 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
-@use '@openmrs/esm-styleguide/src/vars' as *;
+@use '@carbon/colors';
 
 title {
   width: 6.938rem;
@@ -45,7 +45,7 @@ title {
 }
 
 .tabsContainer {
-  background-color: $ui-02;
+  background-color: colors.$white;
 
   :global(.cds--tabs__nav-item--selected) {
     box-shadow: inset 0 2px 0 0 var(--brand-03) !important;
@@ -66,7 +66,7 @@ title {
   grid-column: 1 / 2;
   height: 100%;
   margin: 0.5rem spacing.$spacing-05;
-  background-color: $ui-01;
+  background-color:colors.$gray-10;
   border: 0.5px solid #e0e0e0;
 
   :global(.cds--data-table-container) {
@@ -82,19 +82,19 @@ title {
   }
 
   :global(.cds--data-table--zebra) tbody tr[data-parent-row]:nth-child(4n + 1) td {
-    background-color: $ui-02;
-    border-bottom: 1px solid $ui-03;
-    border-top: 1px solid $ui-03;
+    background-color: colors.$white;
+    border-bottom: 1px solid colors.$gray-20;
+    border-top: 1px solid colors.$gray-20;
   }
 
   :global(.cds--data-table--zebra) tbody tr[data-parent-row]:nth-child(4n + 3) td {
-    background-color: $ui-01;
-    border-bottom: 1px solid $ui-03;
+    background-color:colors.$gray-10;
+    border-bottom: 1px solid colors.$gray-20;
   }
 }
 
 .tableContainer {
-  background-color: $ui-01;
+  background-color:colors.$gray-10;
   margin: 0 spacing.$spacing-05;
   padding: 0;
 
@@ -103,11 +103,11 @@ title {
   }
 
   th {
-    color: $text-02;
+    color: colors.$gray-70;
   }
 
   :global(.cds--data-table) {
-    background-color: $ui-03;
+    background-color: colors.$gray-20;
   }
 
   .toolbarContent {
@@ -146,7 +146,7 @@ title {
 
 .patientSearch {
   width: 25rem;
-  border-bottom-color: $ui-03;
+  border-bottom-color: colors.$gray-20;
 }
 
 .locationFilter {
@@ -156,12 +156,12 @@ title {
 .search {
   width: 100%;
   max-width: 16rem;
-  background-color: $ui-02;
-  border-bottom-color: $ui-03;
+  background-color: colors.$white;
+  border-bottom-color: colors.$gray-20;
 }
 
 .container {
-  background-color: $ui-01;
+  background-color:colors.$gray-10;
 }
 
 .expandedLabQueueVisitRow {
@@ -174,7 +174,7 @@ title {
 
     > div {
       max-height: max-content !important;
-      background-color: $ui-02;
+      background-color: colors.$white;
     }
   }
 
@@ -184,8 +184,8 @@ title {
 }
 
 .tileContainer {
-  background-color: $ui-02;
-  border-top: 1px solid $ui-03;
+  background-color: colors.$white;
+  border-top: 1px solid colors.$gray-20;
   padding: 5rem 0;
 }
 
@@ -202,7 +202,7 @@ title {
 
 .content {
   @include type.type-style('heading-compact-02');
-  color: $text-02;
+  color: colors.$gray-70;
   margin-bottom: 0.5rem;
 }
 

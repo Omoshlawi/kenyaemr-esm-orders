@@ -1,7 +1,6 @@
 @use '@carbon/styles/scss/type';
 @use '@carbon/layout';
 @use '@carbon/colors';
-@use '@openmrs/esm-styleguide/src/vars' as *;
 
 .formLabel {
   color: colors.$cool-gray-90;
@@ -44,7 +43,7 @@
 
 .condition {
   padding: 0.75rem;
-  border-top: 0.0625rem solid $grey-2;
+  border-top: 0.0625rem solid colors.$gray-20;
 
   &:first-of-type {
     border-top: none;
@@ -56,21 +55,21 @@
 }
 
 .conditionsList {
-  background-color: $ui-02;
+  background-color: colors.$white;
   max-height: 14rem;
   overflow-y: auto;
-  border: 1px solid $ui-03;
+  border: 1px solid colors.$gray-20;
 
   li:hover {
-    background-color: $ui-03;
+    background-color: colors.$gray-20;
   }
 }
 
 .emptyResults {
   @include type.type-style('body-compact-01');
-  color: $text-02;
+  color: colors.$gray-70;
   min-height: 1rem;
-  border: 1px solid $ui-03;
+  border: 1px solid colors.$gray-20;
 }
 
 .form {
@@ -96,7 +95,7 @@
 
 .tablet {
   padding: 1.5rem 1rem;
-  background-color: $ui-02;
+  background-color: colors.$white;
 }
 
 .desktop {
@@ -117,19 +116,19 @@
 
 .conditionsError {
   :global(.cds--search-input):focus {
-    outline: 2px solid $danger;
+    outline: 2px solid colors.$red-60;
   }
 
   :global(.cds--search-magnifier) {
     svg {
-      fill: $danger;
+      fill: colors.$red-60;
     }
   }
 }
 
 .errorMessage {
   @include type.type-style('label-02');
-  color: $danger;
+  color: colors.$red-60;
   margin-top: 0.5rem;
 }
 
@@ -159,13 +158,13 @@
 }
 
 .complicationsList {
-  background-color: $ui-02;
+  background-color: colors.$white;
   max-height: 14rem;
   overflow-y: auto;
-  border: 1px solid $ui-03;
+  border: 1px solid colors.$gray-20;
 
   li:hover {
-    background-color: $ui-03;
+    background-color: colors.$gray-20;
   }
 }
 
@@ -174,13 +173,13 @@
 }
 
 .participantsList {
-  background-color: $ui-02;
+  background-color: colors.$white;
   max-height: 14rem;
   overflow-y: auto;
-  border: 1px solid $ui-03;
+  border: 1px solid colors.$gray-20;
 
   li:hover {
-    background-color: $ui-03;
+    background-color: colors.$gray-20;
   }
 }
 

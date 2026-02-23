@@ -1,6 +1,6 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
-@use '@openmrs/esm-styleguide/src/vars' as *;
+@use '@carbon/colors';
 
 .medicationDispenseReviewContainer {
   display: flex;
@@ -29,16 +29,16 @@
 }
 
 .productiveHeading02 {
-  color: $color-gray-70;
+  color: colors.$cool-gray-70;
   @include type.type-style('productive-heading-02');
 }
 
 :global(.omrs-breakpoint-lt-desktop) .formWrapper {
-  background-color: $openmrs-background-grey;
+  background-color: colors.$gray-20;
 }
 
 :global(.omrs-breakpoint-gt-tablet) .formWrapper {
-  background-color: $ui-02;
+  background-color: colors.$white;
 }
 
 .formGroup {
@@ -62,7 +62,7 @@
 .patientInfo {
   position: sticky;
   z-index: 1000;
-  background-color: $ui-02;
+  background-color: colors.$white;
   top: 3rem;
   overflow-y: auto;
 }
@@ -84,7 +84,7 @@
 
 :global(.omrs-breakpoint-lt-desktop) .buttonGroup {
   padding: spacing.$spacing-05 spacing.$spacing-06;
-  background-color: $ui-02;
+  background-color: colors.$white;
 }
 
 .buttonGroup button {

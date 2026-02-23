@@ -1,14 +1,14 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
-@use '@openmrs/esm-styleguide/src/vars' as *;
+@use '@carbon/colors';
 
 .patientDetailsContainer > div {
   margin-bottom: 1rem;
 }
 
 .container {
-  border-bottom: 0.063rem solid $ui-03;
-  background-color: $ui-02;
+  border-bottom: 0.063rem solid colors.$gray-20;
+  background-color: colors.$white;
   display: grid;
   grid-template-columns: 1fr auto;
 }
@@ -45,7 +45,7 @@
 
 .demographics {
   @include type.type-style('body-compact-02');
-  color: $text-02;
+  color: colors.$gray-70;
   margin-top: 0.375rem;
 }
 
@@ -68,7 +68,7 @@
 
 .identifiers {
   @include type.type-style('body-compact-02');
-  color: $ui-04;
+  color: colors.$gray-50;
   margin-top: 0.375rem;
 }
 
@@ -82,7 +82,7 @@
 
 .actionsButtonText {
   @include type.type-style('body-compact-01');
-  color: $interactive-01;
+  color: colors.$blue-60;
 }
 
 .buttonCol {

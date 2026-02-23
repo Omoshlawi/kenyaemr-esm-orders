@@ -49,6 +49,5 @@
   "stockDispense": "Stock Dispense",
   "stockDispenseDetails": "Batch: {{batchNumber}} - Quantity: {{quantity}} ({{quantityUoM}}) - Expiry: {{expiration}}",
   "suppliesdispensing": "Supplies Dispensing",
-  "tabletOverlay": "Tablet overlay",
   "tabList": "Tab List"
 }

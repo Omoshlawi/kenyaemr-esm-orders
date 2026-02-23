@@ -1,6 +1,6 @@
 @use '@carbon/styles/scss/type';
 @use '@carbon/styles/scss/spacing';
-@use '@openmrs/esm-styleguide/src/vars' as *;
+@use '@carbon/colors';
 
 .container {
   position: relative;
@@ -12,14 +12,14 @@
 
 .patientHeader {
   padding: spacing.$spacing-03 spacing.$spacing-05 spacing.$spacing-06;
-  background-color: $ui-01;
+  background-color:colors.$gray-10;
 
   span:first-of-type {
     margin-right: spacing.$spacing-03;
   }
 
   .text02 {
-    color: $text-02;
+    color: colors.$gray-70;
   }
 }
 

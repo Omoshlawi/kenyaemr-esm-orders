@@ -49,6 +49,5 @@
   "stockDispense": "የክምችት ስርጭት",
   "stockDispenseDetails": "ባች: {{batchNumber}} - ብዛት: {{quantity}} ({{quantityUoM}}) - የሚያበቃበት ቀን: {{expiration}}",
   "suppliesdispensing": "የቁሳቁሶች ስርጭት",
-  "tabletOverlay": "ጡባዊ ተደራቢ",
   "tabList": "የትር ዝርዝር"
 }
