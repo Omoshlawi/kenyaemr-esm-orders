@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './print-report.scss';
-import { useConfig, useSession, formatDate } from '@openmrs/esm-framework';
+import { useConfig, useSession, formatDate, useVisit } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
 import { IdentifierType, Person } from '../utils/functions';
 import startCase from 'lodash-es/startCase';
@@ -16,6 +16,7 @@ const PrintableReport: React.FC<PrintableReportProps> = ({ approvedOrders }) => 
   const { logo } = useConfig({ externalModuleName: '@kenyaemr/esm-login-app' });
   const { sessionLocation, user } = useSession();
   const location = sessionLocation?.display;
+  const { activeVisit } = useVisit(approvedOrders?.patient?.uuid);
 
   return (
     <div className={styles.container}>
@@ -53,7 +54,7 @@ const PrintableReport: React.FC<PrintableReportProps> = ({ approvedOrders }) => 
 
           <div className={styles.facilityDetails}>
             <p className={styles.facilityName}>{location}</p>
-            <p className={styles.facilityName}>{approvedOrders?.careSetting?.name}</p>
+            <p className={styles.facilityName}>{activeVisit?.visitType?.display}</p>
             <p className={styles.facilityName}>{t('kenya', 'Kenya')}</p>
           </div>
         </div>

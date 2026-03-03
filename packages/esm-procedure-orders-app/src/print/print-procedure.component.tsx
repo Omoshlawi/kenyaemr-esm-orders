@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './print-procedure.scss';
-import { useConfig, useSession, formatDate } from '@openmrs/esm-framework';
+import { useConfig, useSession, formatDate, useVisit } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
 import startCase from 'lodash-es/startCase';
 import dayjs from 'dayjs';
@@ -15,6 +15,7 @@ const PrintableReport: React.FC<PrintableReportProps> = ({ completedOrder, order
   const { t } = useTranslation();
   const { sessionLocation, user } = useSession();
   const location = sessionLocation?.display;
+  const { activeVisit } = useVisit(completedOrder?.patient?.uuid);
 
   return (
     <div className={styles.container}>
@@ -41,8 +42,8 @@ const PrintableReport: React.FC<PrintableReportProps> = ({ completedOrder, order
               {completedOrder?.patient?.person?.gender === 'M'
                 ? ' Male'
                 : completedOrder?.patient?.person?.gender === 'F'
-                ? ' Female'
-                : ' Unknown'}
+                  ? ' Female'
+                  : ' Unknown'}
             </p>
             <p className={styles.itemLabel}>
               {t('orderDate', 'Order date')}:{' '}
@@ -55,7 +56,7 @@ const PrintableReport: React.FC<PrintableReportProps> = ({ completedOrder, order
 
           <div className={styles.facilityDetails}>
             <p className={styles.facilityName}>{location}</p>
-            <p className={styles.facilityName}>{completedOrder?.careSetting?.name}</p>
+            <p className={styles.facilityName}>{activeVisit?.visitType?.display}</p>
             <p className={styles.facilityName}>{t('kenya', 'Kenya')}</p>
           </div>
         </div>
