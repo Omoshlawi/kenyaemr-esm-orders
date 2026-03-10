@@ -1,5 +1,7 @@
 import { type MedicalSupplyOrderBasketItem } from '../../../types';
 import { type MedicalSupplyType } from '../../../hooks/useMedicalSupplyTypes';
+import { type Visit } from '@openmrs/esm-framework';
+import { careSettingUuid } from '../api';
 
 // See the Urgency enum in https://github.com/openmrs/openmrs-core/blob/492dcd35b85d48730bd19da48f6db146cc882c22/api/src/main/java/org/openmrs/Order.java
 export const priorityOptions = [
@@ -12,11 +14,14 @@ export const priorityOptions = [
 export function createEmptyMedicalSupplyOrder(
   testType: MedicalSupplyType,
   orderer: string,
+  visit: Visit
 ): MedicalSupplyOrderBasketItem {
   return {
     action: 'NEW',
     display: testType.label,
     testType,
     orderer,
+    careSetting: careSettingUuid,
+    visit,
   };
 }

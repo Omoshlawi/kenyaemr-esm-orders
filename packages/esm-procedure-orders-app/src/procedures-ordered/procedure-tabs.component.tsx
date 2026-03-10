@@ -40,10 +40,7 @@ const ProcedureOrdersTabs: React.FC = () => {
   return (
     <main className={`omrs-main-content`}>
       <section className={styles.orderTabsContainer}>
-        <Tabs
-          selectedIndex={selectedTab}
-          onChange={({ selectedIndex }) => setSelectedTab(selectedIndex)}
-          className={styles.tabs}>
+        <Tabs selectedIndex={selectedTab} onChange={({ selectedIndex }) => setSelectedTab(selectedIndex)}>
           <TabList style={{ paddingLeft: '1rem' }} aria-label="Procedure tabs" contained>
             <Tab>
               {t('proceduresOrdered', 'Active Orders')} ({activeOrdersStats.isLoading ? '...' : activeOrdersStats.count}

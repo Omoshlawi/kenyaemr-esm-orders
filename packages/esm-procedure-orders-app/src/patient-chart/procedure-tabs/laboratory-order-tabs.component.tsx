@@ -17,10 +17,7 @@ const LaboratoryResultsTabs: React.FC<LaboratoryResultsTabsProps> = ({ patientUu
   return (
     <>
       <div className={styles.container}>
-        <Tabs
-          selectedIndex={selectedTab}
-          onChange={({ selectedIndex }) => setSelectedTab(selectedIndex)}
-          className={styles.tabs}>
+        <Tabs selectedIndex={selectedTab} onChange={({ selectedIndex }) => setSelectedTab(selectedIndex)}>
           <TabList style={{ paddingLeft: '1rem' }} aria-label="laboratory results tabs" contained>
             <Tab style={{ width: '150px' }}>{t('pending', 'Routine Tests')}</Tab>
             <Tab style={{ width: '150px' }}>{t('referals', 'Referrals')}</Tab>

@@ -1,10 +1,8 @@
-import Root from './root.component';
 import { moduleName } from './constants';
 import { configSchema } from './config-schema';
 
-import { defineConfigSchema, getAsyncLifecycle, getSyncLifecycle } from '@openmrs/esm-framework';
+import { defineConfigSchema, getAsyncLifecycle } from '@openmrs/esm-framework';
 import { createLeftPanelLink } from './left-panel-link';
-import ImagingOrders from './imaging-orders.component';
 
 const options = {
   featureName: 'esm-imaging-orders-app',
@@ -17,15 +15,18 @@ export function startupApp() {
   defineConfigSchema(moduleName, configSchema);
 }
 
-export const root = getSyncLifecycle(Root, options);
-export const radiologyDashboard = getSyncLifecycle(ImagingOrders, options);
+export const root = getAsyncLifecycle(() => import('./root.component'), options);
+export const radiologyDashboard = getAsyncLifecycle(() => import('./imaging-orders.component'), options);
 
 // t('radiologyAndImaging', 'Radiology and Imaging')
-export const imagingOrdersLink = getSyncLifecycle(
-  createLeftPanelLink({
-    name: 'imaging-orders',
-    title: 'radiologyAndImaging',
-  }),
+export const imagingOrdersLink = getAsyncLifecycle(
+  () =>
+    Promise.resolve({
+      default: createLeftPanelLink({
+        name: 'imaging-orders',
+        title: 'radiologyAndImaging',
+      }),
+    }),
   options,
 );
 

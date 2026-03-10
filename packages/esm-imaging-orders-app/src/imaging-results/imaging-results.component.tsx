@@ -72,7 +72,7 @@ const ImagingResultsComponent: React.FC<ImagingResultsComponentProps> = ({ patie
           {t('refresh', 'Refresh')}
         </Button>
       </CardHeader>
-      <DataTable size={responseSize} useZebraStyle rows={rows} headers={headers}>
+      <DataTable size={responseSize} useZebraStyles rows={rows} headers={headers}>
         {({
           rows,
           headers,

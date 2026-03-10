@@ -163,7 +163,7 @@ const ImagingReportForm: React.FC<ResultFormProps> = ({
           </Stack>
         </div>
         <ButtonSet className={classNames({ [styles.tablet]: isTablet, [styles.desktop]: !isTablet })}>
-          <Button style={{ maxWidth: '50%' }} kind="secondary" onClick={closeWorkspace}>
+          <Button style={{ maxWidth: '50%' }} kind="secondary" onClick={() => closeWorkspace()}>
             {t('cancel', 'Cancel')}
           </Button>
           <Button

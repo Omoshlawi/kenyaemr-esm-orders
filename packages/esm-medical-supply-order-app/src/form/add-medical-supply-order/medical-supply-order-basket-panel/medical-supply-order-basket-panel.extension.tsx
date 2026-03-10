@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Button, Tile } from '@carbon/react';
 import { Add, ChevronDown, ChevronUp } from '@carbon/react/icons';
-import { useLayoutType, closeWorkspace, launchWorkspace } from '@openmrs/esm-framework';
+import { useLayoutType, closeWorkspace, launchWorkspace, launchWorkspace2 } from '@openmrs/esm-framework';
 import { type OrderBasketItem, useOrderBasket } from '@openmrs/esm-patient-common-lib';
 import { prepMedicalSupplyOrderPostData } from '../api';
 import styles from './medical-supply-order-basket-panel.scss';
@@ -14,10 +14,11 @@ import { MedicalSupplyOrderBasketItemTile } from './medical-supply-order-basket-
 /**
  * Designs: https://app.zeplin.io/project/60d59321e8100b0324762e05/screen/648c44d9d4052c613e7f23da
  */
-export default function MedicalSupplyOrderBasketPanelExtension() {
+export default function MedicalSupplyOrderBasketPanelExtension({ patient }: { patient: fhir.Patient }) {
   const { t } = useTranslation();
   const isTablet = useLayoutType() === 'tablet';
   const { orders, setOrders } = useOrderBasket<MedicalSupplyOrderBasketItem>(
+    patient,
     'medicalsupply',
     prepMedicalSupplyOrderPostData,
   );
@@ -59,17 +60,11 @@ export default function MedicalSupplyOrderBasketPanelExtension() {
   }, [orders]);
 
   const openNewMedicalSupplyForm = useCallback(() => {
-    closeWorkspace('order-basket', {
-      ignoreChanges: true,
-      onWorkspaceClose: () => launchWorkspace('add-medical-supply-order'),
-    });
+    launchWorkspace2('add-medical-supply-order');
   }, []);
 
   const openEditMedicalSupplyForm = useCallback((order: OrderBasketItem) => {
-    closeWorkspace('order-basket', {
-      ignoreChanges: true,
-      onWorkspaceClose: () => launchWorkspace('add-medical-supply-order', { order }),
-    });
+    launchWorkspace2('add-medical-supply-order', { order });
   }, []);
 
   const removeMedicalSupplyOrder = useCallback(

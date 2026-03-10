@@ -1,7 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { type DefaultPatientWorkspaceProps, useOrderBasket } from '@openmrs/esm-patient-common-lib';
-import { translateFrom, useLayoutType, useSession, useConfig, ExtensionSlot, launchWorkspace } from '@openmrs/esm-framework';
+import { useOrderBasket } from '@openmrs/esm-patient-common-lib';
+import {
+  translateFrom,
+  useLayoutType,
+  useSession,
+  useConfig,
+  ExtensionSlot,
+  type Workspace2DefinitionProps,
+} from '@openmrs/esm-framework';
 import {
   Button,
   ButtonSet,
@@ -29,9 +36,9 @@ import { useQuantityUnits } from '../../../hooks/useMedicalSupplyTypes';
 
 export interface MedicalSupplyOrderFormProps {
   initialOrder: MedicalSupplyOrderBasketItem;
-  closeWorkspace: DefaultPatientWorkspaceProps['closeWorkspace'];
-  closeWorkspaceWithSavedChanges: DefaultPatientWorkspaceProps['closeWorkspaceWithSavedChanges'];
-  promptBeforeClosing: DefaultPatientWorkspaceProps['promptBeforeClosing'];
+  closeWorkspace: Workspace2DefinitionProps['closeWorkspace'];
+  patient: fhir.Patient;
+  setHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
 }
 
 // Designs:
@@ -40,13 +47,14 @@ export interface MedicalSupplyOrderFormProps {
 export function MedicalSupplyOrderForm({
   initialOrder,
   closeWorkspace,
-  closeWorkspaceWithSavedChanges,
-  promptBeforeClosing,
+  patient,
+  setHasUnsavedChanges,
 }: MedicalSupplyOrderFormProps) {
   const { t } = useTranslation();
   const isTablet = useLayoutType() === 'tablet';
   const session = useSession();
   const { orders, setOrders } = useOrderBasket<MedicalSupplyOrderBasketItem>(
+    patient,
     'medicalsupply',
     prepMedicalSupplyOrderPostData,
   );
@@ -105,18 +113,14 @@ export function MedicalSupplyOrderForm({
       const orderIndex = existingOrder ? orders.indexOf(existingOrder) : orders.length;
       newOrders[orderIndex] = data;
       setOrders(newOrders);
-      closeWorkspaceWithSavedChanges({
-        onWorkspaceClose: () => launchWorkspace('order-basket'),
-      });
+      closeWorkspace();
     },
-    [orders, setOrders, session?.currentProvider?.uuid, defaultValues, closeWorkspaceWithSavedChanges],
+    [orders, setOrders, session?.currentProvider?.uuid, defaultValues, closeWorkspace],
   );
 
   const cancelOrder = useCallback(() => {
     setOrders(orders.filter((order) => order.testType.conceptUuid !== defaultValues.testType.conceptUuid));
-    closeWorkspace({
-      onWorkspaceClose: () => launchWorkspace('order-basket'),
-    });
+    closeWorkspace();
   }, [closeWorkspace, orders, setOrders, defaultValues]);
 
   const onError = (errors: FieldErrors<MedicalSupplyOrderBasketItem>) => {
@@ -126,8 +130,8 @@ export function MedicalSupplyOrderForm({
   };
 
   useEffect(() => {
-    promptBeforeClosing(() => isDirty);
-  }, [isDirty, promptBeforeClosing]);
+    setHasUnsavedChanges(isDirty);
+  }, [isDirty, setHasUnsavedChanges]);
 
   return (
     <>
@@ -155,8 +159,8 @@ export function MedicalSupplyOrderForm({
                         onChange(selectedItem);
                       }}
                       items={[]}
-                      invalid={errors.testType?.message}
-                      invalidText={errors.testType?.message}
+                      invalid={!!errors.testType?.message}
+                      invalidText={errors.testType?.message ?? ''}
                     />
                   )}
                 />
@@ -180,7 +184,7 @@ export function MedicalSupplyOrderForm({
                       onChange={({ selectedItem }) => {
                         onChange(selectedItem?.value || '');
                       }}
-                      invalid={errors.urgency?.message}
+                      invalid={!!errors.urgency?.message}
                       invalidText={errors.urgency?.message}
                     />
                   )}
@@ -203,7 +207,7 @@ export function MedicalSupplyOrderForm({
                       label={t('quantity', 'Quantity')}
                       value={value}
                       onChange={(e) => {
-                        const value = e.target.value;
+                        const value = (e.target as HTMLInputElement).value;
                         onChange(value === '' ? 1 : parseFloat(value) || 1);
                       }}
                       onBlur={onBlur}
@@ -251,7 +255,7 @@ export function MedicalSupplyOrderForm({
                     <TextArea
                       enableCounter
                       id="additionalInstructionsInput"
-                      size="lg"
+                      size={8}
                       labelText={t('additionalInstructions', 'Additional instructions')}
                       value={value}
                       onChange={onChange}

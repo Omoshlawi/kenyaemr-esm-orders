@@ -1,6 +1,6 @@
 import { type OrderUrgency, type OrderBasketItem } from '@openmrs/esm-patient-common-lib';
 import { type Link } from './patient-queue';
-import { type OpenmrsResource } from '@openmrs/esm-framework';
+import { Visit, type OpenmrsResource } from '@openmrs/esm-framework';
 
 export enum SearchTypes {
   BASIC = 'basic',
@@ -435,6 +435,8 @@ export interface ProcedureOrderBasketItem extends OrderBasketItem {
   specimenType?: string;
   scheduleDate?: Date;
   bodySite?: string;
+  orderer?: string;
+  careSetting?: string;
 }
 
 export type OrderFrequency = CommonProceduresValueCoded;

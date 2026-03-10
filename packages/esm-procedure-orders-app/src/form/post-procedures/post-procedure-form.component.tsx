@@ -313,6 +313,7 @@ const PostProcedureForm: React.FC<PostProcedureFormProps> = ({
             render={({ field: { onChange } }) => (
               <TextArea
                 id="procedureReport"
+                labelText={t('procedureReport', 'Procedure report')}
                 rows={4}
                 onChange={onChange}
                 placeholder={t('procedureReportPlaceholder', 'Enter procedure report')}
@@ -452,7 +453,7 @@ const PostProcedureForm: React.FC<PostProcedureFormProps> = ({
         </Layer>
       </Stack>
       <ButtonSet className={styles.buttonSetContainer}>
-        <Button onClick={closeWorkspace} size="md" kind="secondary">
+        <Button onClick={() => closeWorkspace()} size="md" kind="secondary">
           {t('discard', 'Discard')}
         </Button>
         <Button type="submit" size="md" kind="primary">

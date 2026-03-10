@@ -35,6 +35,8 @@ export interface ImagingOrderBasketItem extends OrderBasketItem {
   commentsToFulfiller?: string;
   laterality?: string;
   bodySite?: string;
+  orderer?: string;
+  careSetting?: string;
 }
 
 export type OrderFrequency = CommonImagingValueCoded;

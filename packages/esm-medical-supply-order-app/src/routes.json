@@ -13,19 +13,18 @@
     }
 
   ],
-  "workspaces": [
-    {
-      "name": "add-medical-supply-order",
-      "type": "order",
-      "component": "addMedicalSupplyOrderWorkspace",
-      "title": "Add medical supply order"
-
-    }
-  ],
+  
   "pages": [
     {
       "component": "root",
       "route": "medicalsupply"
+    }
+  ],
+  "workspaces2":[
+    {
+      "name": "add-medical-supply-order",
+      "component": "addMedicalSupplyOrderWorkspace",
+      "window": "patient-chart-order-basket"
     }
   ]
 }

@@ -136,12 +136,6 @@
   ],
   "workspaces": [
     {
-      "name": "add-procedures-order",
-      "type": "order",
-      "title": "Add procedure order",
-      "component": "addProceduresOrderWorkspace"
-    },
-    {
       "name": "procedure-report-form",
       "component": "postProcedureResults",
       "title": "Procedure Report Form",
@@ -174,6 +168,13 @@
         "order-basket",
         "add-procedures-order"
       ]
+    }
+  ],
+  "workspaces2":[
+    {
+      "name": "add-procedures-order",
+      "component": "addProceduresOrderWorkspace",
+      "window": "patient-chart-order-basket"
     }
   ]
 }

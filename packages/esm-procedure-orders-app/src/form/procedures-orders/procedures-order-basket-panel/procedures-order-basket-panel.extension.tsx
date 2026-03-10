@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Button, Tile } from '@carbon/react';
 import { Add, ChevronDown, ChevronUp } from '@carbon/react/icons';
-import { useLayoutType, closeWorkspace, launchWorkspace } from '@openmrs/esm-framework';
+import { useLayoutType, launchWorkspace2 } from '@openmrs/esm-framework';
 import { type OrderBasketItem, useOrderBasket } from '@openmrs/esm-patient-common-lib';
 import { ProceduresOrderBasketItemTile } from './procedures-order-basket-item-tile.component';
 import { prepProceduresOrderPostData } from '../api';
@@ -11,10 +11,14 @@ import LabIcon from './procedures-icon.component';
 import styles from './procedures-order-basket-panel.scss';
 import { type ProcedureOrderBasketItem } from '../../../types';
 
-export default function ProceduresOrderBasketPanelExtension() {
+export default function ProceduresOrderBasketPanelExtension({ patient }: { patient: fhir.Patient }) {
   const { t } = useTranslation();
   const isTablet = useLayoutType() === 'tablet';
-  const { orders, setOrders } = useOrderBasket<ProcedureOrderBasketItem>('procedures', prepProceduresOrderPostData);
+  const { orders, setOrders } = useOrderBasket<ProcedureOrderBasketItem>(
+    patient,
+    'procedures',
+    prepProceduresOrderPostData,
+  );
   const [isExpanded, setIsExpanded] = useState(orders.length > 0);
   const {
     incompleteOrderBasketItems,
@@ -53,19 +57,11 @@ export default function ProceduresOrderBasketPanelExtension() {
   }, [orders]);
 
   const openNewProceduresForm = useCallback(() => {
-    closeWorkspace('order-basket', {
-      ignoreChanges: true,
-      onWorkspaceClose: () => {
-        launchWorkspace('add-procedures-order');
-      },
-    });
+    launchWorkspace2('add-procedures-order');
   }, []);
 
   const openEditProceduresForm = useCallback((order: OrderBasketItem) => {
-    closeWorkspace('order-basket', {
-      ignoreChanges: true,
-      onWorkspaceClose: () => launchWorkspace('add-procedures-order', { order }),
-    });
+    launchWorkspace2('add-procedures-order', { order });
   }, []);
 
   const removeLabOrder = useCallback(

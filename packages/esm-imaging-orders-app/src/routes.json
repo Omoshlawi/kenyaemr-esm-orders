@@ -93,5 +93,12 @@
         "add-imaging-order"
       ]
     }
+  ],
+  "workspaces2":[
+    {
+      "name": "add-imaging-order",
+      "component": "addImagingOrderWorkspace",
+      "window": "patient-chart-order-basket"
+    }
   ]
 }

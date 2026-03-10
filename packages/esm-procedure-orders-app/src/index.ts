@@ -1,4 +1,4 @@
-import { getAsyncLifecycle, defineConfigSchema, getSyncLifecycle } from '@openmrs/esm-framework';
+import { getAsyncLifecycle, defineConfigSchema } from '@openmrs/esm-framework';
 
 import { configSchema } from './config-schema';
 import { createLeftPanelLink } from './left-panel-link';
@@ -20,11 +20,14 @@ export const root = getAsyncLifecycle(() => import('./root.component'), options)
 export const expressProceduresDashboard = getAsyncLifecycle(() => import('./procedure.component'), options);
 
 // t('Procedures', 'Procedures')
-export const procedureDashboardLink = getSyncLifecycle(
-  createLeftPanelLink({
-    name: 'procedure',
-    title: 'Procedures',
-  }),
+export const procedureDashboardLink = getAsyncLifecycle(
+  () =>
+    Promise.resolve({
+      default: createLeftPanelLink({
+        name: 'procedure',
+        title: 'Procedures',
+      }),
+    }),
   options,
 );
 

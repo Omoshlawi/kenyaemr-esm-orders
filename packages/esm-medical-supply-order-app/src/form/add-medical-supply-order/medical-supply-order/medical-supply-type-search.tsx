@@ -10,6 +10,7 @@ import {
   ResponsiveWrapper,
   closeWorkspace,
   launchWorkspace,
+  type Visit,
 } from '@openmrs/esm-framework';
 import { useOrderBasket } from '@openmrs/esm-patient-common-lib';
 import styles from './medical-supply-type-search.scss';
@@ -21,9 +22,11 @@ import { useMedicalSupplySearch } from './medical-supply-order.resource';
 
 export interface MedicalSupplyTypeSearchProps {
   openMedicalSupplyForm: (searchResult: MedicalSupplyOrderBasketItem) => void;
+  patient: fhir.Patient;
+  visitContext: Visit;
 }
 
-export function MedicalSupplyTypeSearch({ openMedicalSupplyForm }: MedicalSupplyTypeSearchProps) {
+export function MedicalSupplyTypeSearch({ openMedicalSupplyForm, patient, visitContext }: MedicalSupplyTypeSearchProps) {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm);
@@ -55,6 +58,8 @@ export function MedicalSupplyTypeSearch({ openMedicalSupplyForm }: MedicalSupply
         searchTerm={debouncedSearchTerm}
         openOrderForm={openMedicalSupplyForm}
         focusAndClearSearchInput={focusAndClearSearchInput}
+        patient={patient}
+        visitContext={visitContext}
       />
     </>
   );
@@ -64,12 +69,16 @@ interface MedicalSupplyTypeSearchResultsProps {
   searchTerm: string;
   openOrderForm: (searchResult: MedicalSupplyOrderBasketItem) => void;
   focusAndClearSearchInput: () => void;
+  patient: fhir.Patient;
+  visitContext: Visit;
 }
 
 function MedicalSupplyTypeSearchResults({
   searchTerm,
   openOrderForm,
   focusAndClearSearchInput,
+  patient,
+  visitContext,
 }: MedicalSupplyTypeSearchResultsProps) {
   const { t } = useTranslation();
   const isTablet = useLayoutType() === 'tablet';
@@ -122,6 +131,8 @@ function MedicalSupplyTypeSearchResults({
                 key={testType.conceptUuid}
                 testType={testType}
                 openOrderForm={openOrderForm}
+                patient={patient}
+                visitContext={visitContext}
               />
             ))}
           </div>
@@ -152,15 +163,20 @@ function MedicalSupplyTypeSearchResults({
 interface MedicalSupplyTypeSearchResultItemProps {
   testType: MedicalSupplyType;
   openOrderForm: (searchResult: MedicalSupplyOrderBasketItem) => void;
+  patient: fhir.Patient;
+  visitContext: Visit;
 }
 
 const MedicalSupplyTypeSearchResultItem: React.FC<MedicalSupplyTypeSearchResultItemProps> = ({
   testType,
   openOrderForm,
+  patient,
+  visitContext,
 }) => {
   const isTablet = useLayoutType() === 'tablet';
   const session = useSession();
   const { orders, setOrders } = useOrderBasket<MedicalSupplyOrderBasketItem>(
+    patient,
     'medicalsupply',
     prepMedicalSupplyOrderPostData,
   );
@@ -171,7 +187,7 @@ const MedicalSupplyTypeSearchResultItem: React.FC<MedicalSupplyTypeSearchResultI
 
   const createMedicalSupplyOrder = useCallback(
     (testType: MedicalSupplyType) => {
-      return createEmptyMedicalSupplyOrder(testType, session.currentProvider.uuid);
+      return createEmptyMedicalSupplyOrder(testType, session.currentProvider.uuid, visitContext);
     },
     [session.currentProvider?.uuid],
   );

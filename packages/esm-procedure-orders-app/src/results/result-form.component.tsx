@@ -91,13 +91,11 @@ const PostProcedureForm: React.FC<ResultFormProps> = ({ order, patientUuid }) =>
               <FormLabel className={styles.textArea}>{concept?.display}</FormLabel>
               {Object.keys(errors).length > 0 && <div className={styles.errorDiv}>Procedure report is required</div>}
               <TextArea
+                labelText={concept?.display}
                 id="procedureReport"
                 name="procedureReport"
-                rules={{
-                  required: true,
-                }}
                 invalidText="Required"
-                autofocus
+                autoFocus
                 onChange={(e) => setProcedureReport(e.target.value)}
               />
             </form>

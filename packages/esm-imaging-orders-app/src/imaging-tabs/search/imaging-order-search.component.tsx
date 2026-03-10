@@ -13,7 +13,6 @@ import {
   useVisit,
   showToast,
 } from '@openmrs/esm-framework';
-import { getPatientChartStore } from '@openmrs/esm-patient-common-lib';
 import {
   Table,
   TableHead,
@@ -130,30 +129,6 @@ const OrdersTable: React.FC<OrderTableProps> = ({ patientUuid, imagingOrders, is
       }
 
       setCurrentVisit(patientUuid, activeVisit.uuid);
-      launchWorkspaceGroup('add-imaging-order-workspace-group', {
-        state: {
-          patientUuid,
-        },
-        onWorkspaceGroupLaunch: () => {
-          const store = getPatientChartStore();
-          store.setState({
-            patientUuid,
-          });
-        },
-        workspaceToLaunch: {
-          name: 'add-imaging-order',
-        },
-        workspaceGroupCleanup: () => {
-          mutate((key) => typeof key === 'string' && key.startsWith(IMAGING_ORDERS_API_URL), undefined, {
-            revalidate: true,
-          });
-          const store = getPatientChartStore();
-          store.setState({
-            patientUuid: undefined,
-          });
-          setCurrentVisit(null, null);
-        },
-      });
     },
     [patientUuid, activeVisit],
   );
@@ -206,7 +181,7 @@ const OrdersTable: React.FC<OrderTableProps> = ({ patientUuid, imagingOrders, is
   }));
 
   if (isLoading || isLoadingVisits) {
-    return <DataTableSkeleton size={responseSize} />;
+    return <DataTableSkeleton rowCount={8} columnCount={4} />;
   }
 
   return (

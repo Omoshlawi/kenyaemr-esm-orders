@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
   DataTable,
   Pagination,
@@ -17,6 +17,8 @@ import {
   Dropdown,
   DatePicker,
   DatePickerInput,
+  type DataTableRow,
+  type DataTableHeader,
 } from '@carbon/react';
 import styles from './orders-data-table.scss';
 import { useTranslation } from 'react-i18next';
@@ -50,22 +52,25 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
   const [activatedOnOrAfterDate, setActivatedOnOrAfterDate] = useState('');
 
   return (
-    <DataTable rows={rows} headers={columns} useZebraStyles>
+    <DataTable
+      rows={rows as Omit<DataTableRow<Array<any>>, 'cells'>[]}
+      headers={columns as Array<DataTableHeader>}
+      useZebraStyles>
       {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
         <TableContainer className={styles.tableContainer}>
           <TableToolbar style={{ position: 'static' }}>
             <TableToolbarContent>
               <Layer style={{ margin: '5px' }}>
-                <DatePicker dateFormat="Y-m-d" datePickerType="single">
+                <DatePicker
+                  dateFormat="Y-m-d"
+                  datePickerType="single"
+                  onChange={(_, dateStr) => {
+                    setActivatedOnOrAfterDate(dateStr);
+                  }}>
                   <DatePickerInput
                     labelText={''}
                     id="activatedOnOrAfterDate"
                     placeholder="YYYY-MM-DD"
-                    onChange={(event) => {
-                      setActivatedOnOrAfterDate(event?.target?.value);
-                    }}
-                    type="date"
-                    value={activatedOnOrAfterDate}
                   />
                 </DatePicker>
               </Layer>
@@ -78,7 +83,7 @@ const OrdersDataTable: React.FC<OrdersDataTableProps> = ({
             <TableHead>
               <TableRow>
                 {headers.map((header) => (
-                  <TableHeader {...getHeaderProps({ header })}>{header.header?.content ?? header.header}</TableHeader>
+                  <TableHeader {...getHeaderProps({ header })}>{header.header?.['content'] ?? header.header}</TableHeader>
                 ))}
               </TableRow>
             </TableHead>

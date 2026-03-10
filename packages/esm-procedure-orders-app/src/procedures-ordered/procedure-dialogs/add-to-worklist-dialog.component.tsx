@@ -39,7 +39,7 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({ queueId, orde
 
   const { referrals } = useReferralLocations();
 
-  const [specimenType, setSpecimenType] = useState();
+  const [specimenType, setSpecimenType] = useState<string>('');
 
   const [selectedReferral, setSelectedReferral] = useState('');
 
@@ -149,7 +149,7 @@ const AddToWorklistDialog: React.FC<AddToWorklistDialogProps> = ({ queueId, orde
                       readOnly={
                         config.enableSpecimenIdAutoGeneration ? config.enableSpecimenIdAutoGeneration : preferred
                       }
-                      hideReadOnly={preferred}
+                      labelText={t('specimenID', 'Procedure Id')}
                       onChange={(e) => setSpecimenID(e.target.value)}
                     />
                   </div>

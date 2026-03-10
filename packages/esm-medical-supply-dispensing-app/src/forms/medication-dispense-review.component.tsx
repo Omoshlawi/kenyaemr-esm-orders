@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ComboBox, Dropdown, NumberInput, Stack, TextArea } from '@carbon/react';
+import { ComboBox, NumberInput, Stack, TextArea } from '@carbon/react';
 import { OpenmrsDatePicker, useLayoutType, useConfig, useSession, userHasAccess } from '@openmrs/esm-framework';
 import {
   useOrderConfig,
@@ -9,7 +9,7 @@ import {
   useSubstitutionTypeValueSet,
 } from '../medication-dispense/medication-dispense.resource';
 import { PRIVILEGE_CREATE_DISPENSE_MODIFY_DETAILS } from '../constants';
-import { type NonDrugMedicationDispense, type Medication, type MedicationDispense } from '../types/index';
+import { type NonDrugMedicationDispense } from '../types/index';
 import { type PharmacyConfig } from '../config-schema';
 import styles from '../components/medication-dispense-review.scss';
 import dayjs from 'dayjs';
@@ -139,11 +139,13 @@ const MedicationDispenseReview: React.FC<MedicationDispenseReviewProps> = ({
             invalidText={t('numberIsNotValid', 'Number is not valid')}
             label={t('quantity', 'Quantity')}
             min={0}
-            value={medicationDispense.quantity}
+            value={medicationDispense.quantity?.toString() ?? ''}
             onChange={(e) => {
+              const target = e.target as HTMLInputElement;
+              const value = target.value;
               updateMedicationDispense({
                 ...medicationDispense,
-                quantity: e.target?.value ? parseFloat(e.target.value) : medicationDispense.quantity,
+                quantity: value ? parseFloat(value) : medicationDispense.quantity,
               });
             }}
           />
@@ -198,36 +200,6 @@ const MedicationDispenseReview: React.FC<MedicationDispenseReviewProps> = ({
                 : selectedDate.toISOString(), // to preserve any time component, only update if the day actually changes
             });
           }}></OpenmrsDatePicker>
-
-        {/* {providers && (
-          <ComboBox
-            id="dispenser"
-            light={isTablet}
-            // initialSelectedItem={
-            //   medicationDispense?.performer[0].actor.reference
-            //     ? providers.find(
-            //         (provider) => provider.uuid === medicationDispense?.performer[0].actor.reference.split('/')[1],
-            //       )
-            //     : null
-            // }
-            // onChange={({ selectedItem }) => {
-            //   updateMedicationDispense({
-            //     ...medicationDispense,
-            //     performer: [
-            //       {
-            //         actor: {
-            //           reference: `Practitioner/${selectedItem?.uuid}`,
-            //         },
-            //       },
-            //     ],
-            //   });
-            // }}
-            items={providers}
-            itemToString={(item) => item?.person?.display}
-            required
-            titleText={t('dispensedBy', 'Dispensed by')}
-          />
-        )} */}
       </Stack>
     </div>
   );

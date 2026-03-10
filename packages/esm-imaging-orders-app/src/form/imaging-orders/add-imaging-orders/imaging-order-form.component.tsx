@@ -2,12 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { useOrderBasket } from '@openmrs/esm-patient-common-lib';
 import {
-  translateFrom,
   useLayoutType,
   useSession,
   type DefaultWorkspaceProps,
   ExtensionSlot,
   launchWorkspace,
+  translateFrom,
+  type Workspace2DefinitionProps,
 } from '@openmrs/esm-framework';
 import { careSettingUuid, prepImagingOrderPostData } from '../api';
 import {
@@ -35,9 +36,9 @@ import type { ImagingOrderBasketItem } from '../../../types';
 
 export interface ImagingOrderFormProps {
   initialOrder: ImagingOrderBasketItem;
-  closeWorkspace: DefaultWorkspaceProps['closeWorkspace'];
-  closeWorkspaceWithSavedChanges: DefaultWorkspaceProps['closeWorkspaceWithSavedChanges'];
-  promptBeforeClosing: DefaultWorkspaceProps['promptBeforeClosing'];
+  closeWorkspace: Workspace2DefinitionProps['closeWorkspace'];
+  patient: fhir.Patient;
+  setHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
 }
 
 // Designs:
@@ -46,13 +47,13 @@ export interface ImagingOrderFormProps {
 export function ImagingOrderForm({
   initialOrder,
   closeWorkspace,
-  closeWorkspaceWithSavedChanges,
-  promptBeforeClosing,
+  patient,
+  setHasUnsavedChanges,
 }: ImagingOrderFormProps) {
   const { t } = useTranslation();
   const isTablet = useLayoutType() === 'tablet';
   const session = useSession();
-  const { orders, setOrders } = useOrderBasket<ImagingOrderBasketItem>('imaging', prepImagingOrderPostData);
+  const { orders, setOrders } = useOrderBasket<ImagingOrderBasketItem>(patient, 'imaging', prepImagingOrderPostData);
   const { testTypes, isLoading: isLoadingTestTypes, error: errorLoadingTestTypes } = useImagingTypes();
   const [showErrorNotification, setShowErrorNotification] = useState(false);
 
@@ -104,18 +105,14 @@ export function ImagingOrderForm({
       const orderIndex = existingOrder ? orders.indexOf(existingOrder) : orders.length;
       newOrders[orderIndex] = data;
       setOrders(newOrders);
-      closeWorkspaceWithSavedChanges({
-        onWorkspaceClose: () => launchWorkspace('order-basket'),
-      });
+      closeWorkspace();
     },
-    [orders, setOrders, defaultValues, closeWorkspaceWithSavedChanges, session],
+    [orders, setOrders, defaultValues, closeWorkspace, session],
   );
 
   const cancelOrder = useCallback(() => {
     setOrders(orders.filter((order) => order.testType.conceptUuid !== defaultValues.testType.conceptUuid));
-    closeWorkspace({
-      onWorkspaceClose: () => launchWorkspace('order-basket'),
-    });
+    closeWorkspace();
   }, [closeWorkspace, orders, setOrders, defaultValues]);
 
   const onError = (errors: FieldErrors<ImagingOrderBasketItem>) => {
@@ -125,8 +122,8 @@ export function ImagingOrderForm({
   };
 
   useEffect(() => {
-    promptBeforeClosing(() => isDirty);
-  }, [isDirty, promptBeforeClosing]);
+    setHasUnsavedChanges(isDirty);
+  }, [isDirty, setHasUnsavedChanges]);
 
   const [showScheduleDate, setShowScheduleDate] = useState(false);
 
@@ -164,7 +161,7 @@ export function ImagingOrderForm({
                       onBlur={onBlur}
                       disabled={isLoadingTestTypes}
                       onChange={({ selectedItem }) => onChange(selectedItem)}
-                      invalid={errors.testType?.message}
+                      invalid={!!errors.testType?.message}
                       invalidText={errors.testType?.message}
                     />
                   )}
@@ -190,7 +187,7 @@ export function ImagingOrderForm({
                         onChange(selectedItem?.value || '');
                         setShowScheduleDate(selectedItem?.label === 'Scheduled');
                       }}
-                      invalid={errors.urgency?.message}
+                      invalid={!!errors.urgency?.message}
                       invalidText={errors.urgency?.message}
                     />
                   )}
@@ -211,7 +208,6 @@ export function ImagingOrderForm({
                           datePickerType="single"
                           value={value}
                           onChange={([newStartDate]) => onChange(newStartDate)}
-                          onBlur={onBlur}
                           ref={ref}>
                           <DatePickerInput
                             id="scheduleDatePicker"
@@ -242,7 +238,7 @@ export function ImagingOrderForm({
                       items={lateralityItems}
                       onBlur={onBlur}
                       onChange={({ selectedItem }) => onChange(selectedItem?.value || '')}
-                      invalid={errors.laterality?.message}
+                      invalid={!!errors.laterality?.message}
                       invalidText={errors.laterality?.message}
                       itemToString={(item) => item?.label}
                     />
@@ -261,13 +257,13 @@ export function ImagingOrderForm({
                     <TextArea
                       enableCounter
                       id="orderReasonNonCodedInput"
-                      size="lg"
+                      size={8}
                       labelText={'Order Reason'}
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
                       maxCount={500}
-                      invalid={errors.orderReasonNonCoded?.message}
+                      invalid={!!errors.orderReasonNonCoded?.message}
                       invalidText={errors.orderReasonNonCoded?.message}
                     />
                   )}
@@ -285,13 +281,13 @@ export function ImagingOrderForm({
                     <TextArea
                       enableCounter
                       id="additionalInstructionsInput"
-                      size="lg"
+                      size={8}
                       labelText={t('additionalInstructions', 'Additional instructions')}
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
                       maxCount={500}
-                      invalid={errors.instructions?.message}
+                      invalid={!!errors.instructions?.message}
                       invalidText={errors.instructions?.message}
                     />
                   )}
@@ -309,13 +305,13 @@ export function ImagingOrderForm({
                     <TextArea
                       enableCounter
                       id="commentsToFulfillerInput"
-                      size="lg"
+                      size={8}
                       labelText={t('commentsToFulfiller', 'Comments To Fulfiller')}
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
                       maxCount={500}
-                      invalid={errors.commentsToFulfiller?.message}
+                      invalid={!!errors.commentsToFulfiller?.message}
                       invalidText={errors.commentsToFulfiller?.message}
                     />
                   )}

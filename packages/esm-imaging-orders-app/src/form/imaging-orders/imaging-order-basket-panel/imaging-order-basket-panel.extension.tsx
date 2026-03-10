@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Button, Tile } from '@carbon/react';
 import { Add, ChevronDown, ChevronUp } from '@carbon/react/icons';
-import { useLayoutType, closeWorkspace, launchWorkspace } from '@openmrs/esm-framework';
+import { useLayoutType, closeWorkspace, launchWorkspace, launchWorkspace2 } from '@openmrs/esm-framework';
 import { type OrderBasketItem, useOrderBasket } from '@openmrs/esm-patient-common-lib';
 import { ImagingOrderBasketItemTile } from './imaging-order-basket-item-tile.component';
 import { prepImagingOrderPostData } from '../api';
@@ -14,10 +14,10 @@ import { type ImagingOrderBasketItem } from '../../../types';
 /**
  * Designs: https://app.zeplin.io/project/60d59321e8100b0324762e05/screen/648c44d9d4052c613e7f23da
  */
-export default function ImagingOrderBasketPanelExtension() {
+export default function ImagingOrderBasketPanelExtension({ patient }: { patient: fhir.Patient }) {
   const { t } = useTranslation();
   const isTablet = useLayoutType() === 'tablet';
-  const { orders, setOrders } = useOrderBasket<ImagingOrderBasketItem>('imaging', prepImagingOrderPostData);
+  const { orders, setOrders } = useOrderBasket<ImagingOrderBasketItem>(patient, 'imaging', prepImagingOrderPostData);
   const [isExpanded, setIsExpanded] = useState(orders.length > 0);
   const {
     incompleteOrderBasketItems,
@@ -56,17 +56,11 @@ export default function ImagingOrderBasketPanelExtension() {
   }, [orders]);
 
   const launchImagingOrderForm = useCallback(() => {
-    closeWorkspace('order-basket', {
-      ignoreChanges: true,
-      onWorkspaceClose: () => launchWorkspace('add-imaging-order'),
-    });
+    launchWorkspace2('add-imaging-order');
   }, []);
 
   const openImagingOrderFormForEditing = useCallback((order: OrderBasketItem) => {
-    closeWorkspace('order-basket', {
-      ignoreChanges: true,
-      onWorkspaceClose: () => launchWorkspace('add-imaging-order', { order }),
-    });
+    launchWorkspace2('add-imaging-order', { order });
   }, []);
 
   const removeLabOrder = useCallback(

@@ -49,7 +49,7 @@ const TestsPrintResults: React.FC<TestOrdersProps> = ({ obs }) => {
   if (filteredItems?.length >= 0) {
     return (
       <div>
-        <DataTable rows={tableRows} headers={columns} useZebraStyles expanded={false}>
+        <DataTable rows={tableRows} headers={columns} useZebraStyles>
           {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer className={styles.tableContainer}>
               <Table {...getTableProps()} className={styles.activePatientsTable}>

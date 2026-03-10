@@ -38,12 +38,13 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control, err
           name={concept.uuid}
           render={({ field }) => (
             <TextInput
+              id={concept.uuid}
               key={concept.uuid}
               className={styles.textInput}
               {...field}
               type={concept.datatype.display === 'Numeric' ? 'number' : 'text'}
               labelText={
-                concept?.display + (concept.datatype.display === 'Numeric' ? printValueRange(concept) ?? '' : '')
+                concept?.display + (concept.datatype.display === 'Numeric' ? (printValueRange(concept) ?? '') : '')
               }
               autoFocus
             />
@@ -60,12 +61,12 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control, err
           }}
           render={({ field }) => (
             <Select
+              id={concept.uuid}
               key={concept.uuid}
               className={styles.textInput}
               {...field}
-              type="text"
               labelText={concept?.display}
-              rules={{ required: true }}>
+              required>
               <SelectItem text={t('option', 'Choose an Option')} value="" />
 
               {concept?.answers?.map((answer) => (
@@ -90,12 +91,13 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control, err
                 }}
                 render={({ field }) => (
                   <TextInput
+                    id={member.uuid}
                     key={member.uuid}
                     className={styles.textInput}
                     {...field}
                     type={member.datatype.display === 'Numeric' ? 'number' : 'text'}
                     labelText={
-                      member?.display + (member.datatype.display === 'Numeric' ? printValueRange(member) ?? '' : '')
+                      member?.display + (member.datatype.display === 'Numeric' ? (printValueRange(member) ?? '') : '')
                     }
                     autoFocus={index === 0}
                   />
@@ -114,6 +116,7 @@ const ResultFormField: React.FC<ResultFormFieldProps> = ({ concept, control, err
                 }}
                 render={({ field }) => (
                   <Select
+                    id={member.uuid}
                     key={member.uuid}
                     className={styles.textInput}
                     {...field}

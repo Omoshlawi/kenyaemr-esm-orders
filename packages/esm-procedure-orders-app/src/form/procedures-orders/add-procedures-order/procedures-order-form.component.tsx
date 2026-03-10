@@ -7,8 +7,8 @@ import {
   useSession,
   useConfig,
   ExtensionSlot,
-  type DefaultWorkspaceProps,
-  launchWorkspace,
+  type Workspace2DefinitionProps,
+  type Visit,
 } from '@openmrs/esm-framework';
 import { careSettingUuid, prepProceduresOrderPostData, useOrderReasons, useConceptById, type Concept } from '../api';
 import {
@@ -39,22 +39,28 @@ import { moduleName } from '../../../constants';
 
 export interface ProceduresOrderFormProps {
   initialOrder: ProcedureOrderBasketItem;
-  closeWorkspace: DefaultWorkspaceProps['closeWorkspace'];
-  closeWorkspaceWithSavedChanges: DefaultWorkspaceProps['closeWorkspaceWithSavedChanges'];
-  promptBeforeClosing: DefaultWorkspaceProps['promptBeforeClosing'];
+  closeWorkspace: Workspace2DefinitionProps['closeWorkspace'];
+  setHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
+  patient: fhir.Patient;
+  visitContext: Visit;
 }
 
 export function ProceduresOrderForm({
   initialOrder,
   closeWorkspace,
-  closeWorkspaceWithSavedChanges,
-  promptBeforeClosing,
+  setHasUnsavedChanges,
+  patient,
+  visitContext,
 }: ProceduresOrderFormProps) {
   const { t } = useTranslation();
   const isTablet = useLayoutType() === 'tablet';
   const session = useSession();
   const { orderConfigObject, isLoading: isLoadingOrderConfig, error: errorFetchingOrderConfig } = useOrderConfig();
-  const { orders, setOrders } = useOrderBasket<ProcedureOrderBasketItem>('procedures', prepProceduresOrderPostData);
+  const { orders, setOrders } = useOrderBasket<ProcedureOrderBasketItem>(
+    patient,
+    'procedures',
+    prepProceduresOrderPostData,
+  );
   const { testTypes, isLoading: isLoadingTestTypes, error: errorLoadingTestTypes } = useProceduresTypes();
   const [showErrorNotification, setShowErrorNotification] = useState(false);
   const {
@@ -144,18 +150,14 @@ export function ProceduresOrderForm({
       const orderIndex = existingOrder ? orders.indexOf(existingOrder) : orders.length;
       newOrders[orderIndex] = data;
       setOrders(newOrders);
-      closeWorkspaceWithSavedChanges({
-        onWorkspaceClose: () => launchWorkspace('order-basket'),
-      });
+      closeWorkspace();
     },
-    [orders, setOrders, closeWorkspace, session?.currentProvider?.uuid, defaultValues, closeWorkspaceWithSavedChanges],
+    [orders, setOrders, closeWorkspace, session?.currentProvider?.uuid, defaultValues, setHasUnsavedChanges],
   );
 
   const cancelOrder = useCallback(() => {
     setOrders(orders.filter((order) => order.testType.conceptUuid !== defaultValues.testType.conceptUuid));
-    closeWorkspace({
-      onWorkspaceClose: () => launchWorkspace('order-basket'),
-    });
+    closeWorkspace();
   }, [closeWorkspace, orders, setOrders, defaultValues]);
 
   const onError = (errors: FieldErrors<ProcedureOrderBasketItem>) => {
@@ -165,8 +167,8 @@ export function ProceduresOrderForm({
   };
 
   useEffect(() => {
-    promptBeforeClosing(() => isDirty);
-  }, [isDirty, promptBeforeClosing]);
+    setHasUnsavedChanges(isDirty);
+  }, [isDirty, setHasUnsavedChanges]);
 
   const [showScheduleDate, setShowScheduleDate] = useState(false);
 
@@ -203,8 +205,8 @@ export function ProceduresOrderForm({
                       onBlur={onBlur}
                       disabled={isLoadingTestTypes}
                       onChange={({ selectedItem }) => onChange(selectedItem)}
-                      invalid={errors.testType?.message}
-                      invalidText={errors.testType?.message}
+                      invalid={!!errors.testType?.message}
+                      invalidText={errors.testType?.message ?? ''}
                     />
                   )}
                 />
@@ -225,7 +227,7 @@ export function ProceduresOrderForm({
                       placeholder={t('categoryPlaceholder', 'Select category')}
                       onBlur={onBlur}
                       onChange={({ selectedItem }) => onChange(selectedItem?.value || '')}
-                      invalid={error?.message}
+                      invalid={!!error?.message}
                       invalidText={error?.message}
                     />
                   )}
@@ -251,8 +253,8 @@ export function ProceduresOrderForm({
                         onChange(selectedItem?.value || '');
                         setShowScheduleDate(selectedItem?.label === 'Scheduled');
                       }}
-                      invalid={errors.urgency?.message}
-                      invalidText={errors.urgency?.message}
+                      invalid={!!errors.urgency?.message}
+                      invalidText={errors.urgency?.message ?? ''}
                     />
                   )}
                 />
@@ -272,7 +274,6 @@ export function ProceduresOrderForm({
                           datePickerType="single"
                           value={value}
                           onChange={([newStartDate]) => onChange(newStartDate)}
-                          onBlur={onBlur}
                           ref={ref}>
                           <DatePickerInput
                             id="scheduleDatePicker"
@@ -300,12 +301,12 @@ export function ProceduresOrderForm({
                         size="lg"
                         id="orderReasonInput"
                         titleText={t('orderReason', 'Order reason')}
-                        selectedItem={''}
+                        selectedItem={orderReasons.find((option) => option.uuid === value) || null}
                         itemToString={(item) => item?.display}
                         items={orderReasons ?? []}
                         onBlur={onBlur}
                         onChange={({ selectedItem }) => onChange(selectedItem?.uuid || '')}
-                        invalid={errors.orderReason?.message}
+                        invalid={!!errors.orderReason?.message}
                         invalidText={errors.orderReason?.message}
                       />
                     )}
@@ -329,7 +330,7 @@ export function ProceduresOrderForm({
                       items={bodySiteItems ?? []}
                       onBlur={onBlur}
                       onChange={({ selectedItem }) => onChange(selectedItem?.uuid || '')}
-                      invalid={errors.bodySite?.message}
+                      invalid={!!errors.bodySite?.message}
                       invalidText={errors.bodySite?.message}
                       itemToString={(item) => item?.display}
                     />
@@ -346,7 +347,6 @@ export function ProceduresOrderForm({
                   control={control}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <NumberInput
-                      enableCounter
                       id="numberOfRepeats"
                       label={t('numberOfRepeats', 'Number Of Repeats')}
                       min={0}
@@ -354,7 +354,7 @@ export function ProceduresOrderForm({
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
-                      invalid={errors.numberOfRepeats?.message}
+                      invalid={!!errors.numberOfRepeats?.message}
                       invalidText={errors.numberOfRepeats?.message}
                     />
                   )}
@@ -377,7 +377,7 @@ export function ProceduresOrderForm({
                       items={orderFrequencies ?? []}
                       onBlur={onBlur}
                       onChange={({ selectedItem }) => onChange(selectedItem?.value || '')}
-                      invalid={errors.frequency?.message}
+                      invalid={!!errors.frequency?.message}
                       invalidText={errors.frequency?.message}
                       itemToString={(item) => item?.value}
                       disabled={isLoadingOrderConfig}
@@ -400,13 +400,13 @@ export function ProceduresOrderForm({
                     <TextArea
                       enableCounter
                       id="orderReasonNonCodedInput"
-                      size="lg"
+                      size={8}
                       labelText={'Order Reason'}
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
                       maxCount={500}
-                      invalid={errors.orderReasonNonCoded?.message}
+                      invalid={!!errors.orderReasonNonCoded?.message}
                       invalidText={errors.orderReasonNonCoded?.message}
                     />
                   )}
@@ -424,13 +424,13 @@ export function ProceduresOrderForm({
                     <TextArea
                       enableCounter
                       id="additionalInstructionsInput"
-                      size="lg"
+                      size={8}
                       labelText={t('additionalInstructions', 'Additional instructions')}
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
                       maxCount={500}
-                      invalid={errors.instructions?.message}
+                      invalid={!!errors.instructions?.message}
                       invalidText={errors.instructions?.message}
                     />
                   )}
@@ -448,13 +448,13 @@ export function ProceduresOrderForm({
                     <TextArea
                       enableCounter
                       id="commentsToFulfillerInput"
-                      size="lg"
+                      size={8}
                       labelText={t('commentsToFulfiller', 'Comments To Fulfiller')}
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
                       maxCount={500}
-                      invalid={errors.commentsToFulfiller?.message}
+                      invalid={!!errors.commentsToFulfiller?.message}
                       invalidText={errors.commentsToFulfiller?.message}
                     />
                   )}

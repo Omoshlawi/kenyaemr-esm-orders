@@ -13,7 +13,7 @@ interface SendEmailDialogProps {
 const SendEmailDialog: React.FC<SendEmailDialogProps> = ({ patientUuid, closeModal, sendEmail }) => {
   const { t } = useTranslation();
 
-  const [email, setEmail] = useState();
+  const [email, setEmail] = useState<string>('');
 
   const { patient, isLoading } = usePatient(patientUuid);
 

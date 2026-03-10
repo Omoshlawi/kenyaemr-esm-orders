@@ -1,5 +1,6 @@
-import { type ProcedureOrderBasketItem } from '../../../types';
-import { type ProceduresType } from './useProceduresTypes';
+import { type Visit } from '@openmrs/esm-framework';
+import type { ProcedureOrderBasketItem } from '../../../types';
+import type { ProceduresType } from './useProceduresTypes';
 
 export const priorityOptions = [
   { value: 'STAT', label: 'Emergency' },
@@ -12,11 +13,12 @@ export const categoryItems = [
   { value: '3798940f-87b8-464e-b36a-17da246f034e', label: 'Major' },
 ];
 
-export function createEmptyLabOrder(testType: ProceduresType, orderer: string): ProcedureOrderBasketItem {
+export function createEmptyLabOrder(testType: ProceduresType, orderer: string, visit: Visit): ProcedureOrderBasketItem {
   return {
     action: 'NEW',
     display: testType.label,
     testType,
     orderer,
+    visit
   };
 }

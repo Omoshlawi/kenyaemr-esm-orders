@@ -114,7 +114,6 @@ const GroupedOrdersTable: React.FC<GroupedOrdersTableProps> = (props) => {
       <div className={styles.dataTableContainer}>
         <div className={styles.filtersContainer}>
           <Search
-            light
             labelText=""
             onChange={(event) => setSearchString(event.target.value)}
             placeholder={t('searchByPatientName', 'Search by patient name')}

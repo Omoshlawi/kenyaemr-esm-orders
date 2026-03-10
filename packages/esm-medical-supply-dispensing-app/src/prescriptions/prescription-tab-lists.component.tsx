@@ -47,11 +47,7 @@ const PrescriptionTabLists: React.FC = () => {
   return (
     <main className={`omrs-main-content ${styles.prescriptionListContainer}`}>
       <section className={styles.prescriptionTabsContainer}>
-        <Tabs
-          className={styles.prescriptionTabs}
-          onChange={handleTabChange}
-          type="container"
-          tabContentClassName={styles.hiddenTabsContent}>
+        <Tabs onChange={handleTabChange}>
           <TabList aria-label={t('tabList', 'Tab List')} contained className={styles.tabsContainer}>
             {tabs.map((tab, index) => {
               return (
