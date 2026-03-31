@@ -113,7 +113,7 @@ export function MedicalSupplyOrderForm({
       const orderIndex = existingOrder ? orders.indexOf(existingOrder) : orders.length;
       newOrders[orderIndex] = data;
       setOrders(newOrders);
-      closeWorkspace();
+      closeWorkspace({ discardUnsavedChanges: true });
     },
     [orders, setOrders, session?.currentProvider?.uuid, defaultValues, closeWorkspace],
   );

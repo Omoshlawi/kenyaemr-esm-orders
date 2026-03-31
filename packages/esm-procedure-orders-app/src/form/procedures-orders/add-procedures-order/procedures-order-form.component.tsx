@@ -150,7 +150,7 @@ export function ProceduresOrderForm({
       const orderIndex = existingOrder ? orders.indexOf(existingOrder) : orders.length;
       newOrders[orderIndex] = data;
       setOrders(newOrders);
-      closeWorkspace();
+      closeWorkspace({ discardUnsavedChanges: true });
     },
     [orders, setOrders, closeWorkspace, session?.currentProvider?.uuid, defaultValues, setHasUnsavedChanges],
   );

@@ -78,7 +78,12 @@ export default function AddProceduresOrderWorkspace({
         )}
         {!currentLabOrder ? (
           <div>
-            <TestTypeSearch openLabForm={setCurrentLabOrder} patient={patient} visitContext={visitContext} />
+            <TestTypeSearch
+              openLabForm={setCurrentLabOrder}
+              patient={patient}
+              visitContext={visitContext}
+              closeWorkspace={closeWorkspace}
+            />
           </div>
         ) : (
           <div>
