@@ -54,6 +54,18 @@ export const configSchema = {
     _description: 'The procedure concept class UUID',
     _default: '8d490bf4-c2cc-11de-8d13-0010c6dffd0f',
   },
+  procedureServiceConceptUuid: {
+    _type: Type.UUID,
+    _description: 'The procedure service concept UUID',
+    _default: '164164AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+  },
+  queueStatusConcepts: {
+    _type: Type.Object,
+    _description: 'Concepts used for visit queue entry statuses',
+    _default: {
+      waiting: '167407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+    },
+  },
 };
 
 export interface OrderReason {
@@ -68,6 +80,9 @@ export interface ConfigObject {
   testOrderTypeUuid: string;
   labTestsWithOrderReasons: Array<OrderReason>;
   showPrintButton: boolean;
+  queueStatusConcepts: {
+    waiting: string;
+  };
   orders: {
     labOrderTypeUuid: string;
     labOrderableConcepts: Array<string>;
@@ -78,6 +93,7 @@ export interface ConfigObject {
   procedureComplicationConceptUuid: string;
   procedureResultEncounterType: string;
   procedureResultEncounterRole: string;
+  procedureServiceConceptUuid: string;
 }
 
 export const StringPath =

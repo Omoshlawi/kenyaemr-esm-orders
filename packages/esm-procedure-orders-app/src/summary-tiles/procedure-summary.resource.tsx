@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 
 import { type DateFilterContext, type Result } from '../types';
 import { ProcedureConceptClass_UUID } from '../constants';
+import { useQueueEntries } from '../queues-form-extension/queue-form-extension.resources';
 
 export function useMetrics() {
   const metrics = {
@@ -22,12 +23,17 @@ export function useMetrics() {
   };
 }
 
-export function useProcedureOrderStats(fulfillerStatus: string) {
+export function useProcedureOrderStats(fulfillerStatus: string, queue?: string) {
   const config = useConfig() as ConfigObject;
   const { dateRange } = useAppContext<DateFilterContext>('procedures-date-filter') ?? {
     dateRange: [dayjs().startOf('day').toDate(), new Date()],
     setDateRange: () => {},
   };
+  const {
+    queueEntries,
+    isLoading: isLoadingQueueEntries,
+    error: errorQueueEntries,
+  } = useQueueEntries({ queues: [queue] });
 
   const activatedOnOrAfterDate = dateRange.at(0).toISOString();
   const activatedOnOrBeforeDate = dateRange.at(1).toISOString();
@@ -47,42 +53,47 @@ export function useProcedureOrderStats(fulfillerStatus: string) {
         order.fulfillerStatus === null &&
         order.dateStopped === null &&
         order.action === 'NEW' &&
-        order.concept.conceptClass.uuid === ProcedureConceptClass_UUID
+        order.concept.conceptClass.uuid === ProcedureConceptClass_UUID &&
+        queueEntries?.some((entry) => entry.patient.uuid === order.patient.uuid)
       );
     } else if (fulfillerStatus === 'IN_PROGRESS') {
       return (
         order.fulfillerStatus === 'IN_PROGRESS' &&
         order.dateStopped === null &&
         order.action !== 'DISCONTINUE' &&
-        order.concept.conceptClass.uuid === ProcedureConceptClass_UUID
+        order.concept.conceptClass.uuid === ProcedureConceptClass_UUID &&
+        queueEntries?.some((entry) => entry.patient.uuid === order.patient.uuid)
       );
     } else if (fulfillerStatus === 'COMPLETED') {
       return (
         order.fulfillerStatus === 'COMPLETED' &&
         order.dateStopped === null &&
         order.action !== 'DISCONTINUE' &&
-        order.concept.conceptClass.uuid === ProcedureConceptClass_UUID
+        order.concept.conceptClass.uuid === ProcedureConceptClass_UUID &&
+        queueEntries?.some((entry) => entry.patient.uuid === order.patient.uuid)
       );
     } else if (fulfillerStatus === 'EXCEPTION') {
       return (
         order.fulfillerStatus === 'EXCEPTION' &&
         order.dateStopped === null &&
         order.action !== 'DISCONTINUE' &&
-        order.concept.conceptClass.uuid === ProcedureConceptClass_UUID
+        order.concept.conceptClass.uuid === ProcedureConceptClass_UUID &&
+        queueEntries?.some((entry) => entry.patient.uuid === order.patient.uuid)
       );
     } else if (fulfillerStatus === 'DECLINED') {
       return (
         order.fulfillerStatus === 'DECLINED' &&
         order.dateStopped === null &&
         order.action !== 'DISCONTINUE' &&
-        order.concept.conceptClass.uuid === ProcedureConceptClass_UUID
+        order.concept.conceptClass.uuid === ProcedureConceptClass_UUID &&
+        queueEntries?.some((entry) => entry.patient.uuid === order.patient.uuid)
       );
     }
   });
   return {
     count: procedureOrders?.length > 0 ? procedureOrders.length : 0,
-    isLoading,
-    isError: error,
+    isLoading: isLoading || isLoadingQueueEntries,
+    isError: error || errorQueueEntries,
     mutate: mutateOrders,
   };
 }

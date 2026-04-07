@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { type FC } from 'react';
 import NotDoneList from '../not-done-list/not-done-list.component';
 
-const NotDoneComponent = () => {
+const NotDoneComponent: FC<{ queue: string }> = ({ queue }) => {
   return (
     <div>
-      <NotDoneList fulfillerStatus={'DECLINED'} />
+      <NotDoneList fulfillerStatus={'DECLINED'} queue={queue} />
     </div>
   );
 };

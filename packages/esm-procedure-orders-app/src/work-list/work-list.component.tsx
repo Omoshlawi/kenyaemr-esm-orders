@@ -7,7 +7,7 @@ import GroupedOrdersTable from '../shared/ui/common/grouped-orders-table.compone
 import { DataTableSkeleton } from '@carbon/react';
 import { type WorklistProps } from '../types';
 
-const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
+const WorkList: React.FC<WorklistProps & { queue: string }> = ({ fulfillerStatus, queue }) => {
   const { t } = useTranslation();
 
   const { workListEntries, isLoading } = useOrdersWorklist('', fulfillerStatus);
@@ -21,6 +21,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
       <div>
         <div className={styles.headerBtnContainer}></div>
         <GroupedOrdersTable
+          queue={queue}
           orders={workListEntries}
           showActions={true}
           showStatus={true}

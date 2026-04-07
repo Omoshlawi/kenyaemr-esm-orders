@@ -3,11 +3,13 @@ import { useOrdersWorklist } from '../hooks/useOrdersWorklist';
 import GroupedOrdersTable from '../shared/ui/common/grouped-orders-table.component';
 import { DataTableSkeleton } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
+
 interface WorklistProps {
   fulfillerStatus: string;
+  queue: string;
 }
 
-const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
+const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus, queue }) => {
   const { t } = useTranslation();
   const { workListEntries, isLoading } = useOrdersWorklist('', fulfillerStatus);
 
@@ -20,6 +22,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
       <>
         <div>
           <GroupedOrdersTable
+            queue={queue}
             orders={workListEntries}
             showActions={true}
             showStatus={true}

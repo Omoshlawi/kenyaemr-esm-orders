@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { type FC } from 'react';
 import { CompletedList } from '../completed-list/completed-list.component';
 
-const CompletedComponent = () => {
+const CompletedComponent: FC<{ queue: string }> = ({ queue }) => {
   return (
     <div>
-      <CompletedList fulfillerStatus={'COMPLETED'} />
+      <CompletedList fulfillerStatus={'COMPLETED'} queue={queue} />
     </div>
   );
 };

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { type FC } from 'react';
 import ReferredProcedures from '../referred-procedures/referred-procedures.component';
 
-const ReferredComponent = () => {
+const ReferredComponent: FC<{ queue: string }> = ({ queue }) => {
   return (
     <div>
-      <ReferredProcedures fulfillerStatus={'EXCEPTION'} />
+      <ReferredProcedures fulfillerStatus={'EXCEPTION'} queue={queue} />
     </div>
   );
 };

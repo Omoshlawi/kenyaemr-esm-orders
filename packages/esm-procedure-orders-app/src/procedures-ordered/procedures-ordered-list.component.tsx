@@ -5,9 +5,10 @@ import { DataTableSkeleton } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
 interface ProcedurePatientListProps {
   fulfillerStatus: string;
+  queue: string;
 }
 
-const ProcedureOrderedList: React.FC<ProcedurePatientListProps> = () => {
+const ProcedureOrderedList: React.FC<ProcedurePatientListProps> = ({ queue }) => {
   const { t } = useTranslation();
   const { workListEntries, isLoading } = useOrdersWorklist('', '');
 
@@ -23,6 +24,7 @@ const ProcedureOrderedList: React.FC<ProcedurePatientListProps> = () => {
         showStatus={true}
         showOrderType={true}
         showStartButton={false}
+        queue={queue}
         title={t('orderedProcedures', 'Ordered Procedures')}
         actions={[
           {

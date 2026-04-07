@@ -1,4 +1,4 @@
-import { default as React, useMemo, useState } from 'react';
+import { default as React, useContext, useMemo, useState } from 'react';
 import {
   DataTable,
   Search,
@@ -15,7 +15,7 @@ import {
   Button,
   Pagination,
 } from '@carbon/react';
-import { restBaseUrl, useLayoutType, usePagination } from '@openmrs/esm-framework';
+import { ConfigurableLink, restBaseUrl, useLayoutType, usePagination } from '@openmrs/esm-framework';
 import { CardHeader, usePaginationInfo } from '@openmrs/esm-patient-common-lib';
 import upperCase from 'lodash-es/upperCase';
 import { useTranslation } from 'react-i18next';
@@ -30,13 +30,15 @@ import { useSearchGroupedResults } from '../../../hooks/useSearchGroupedResults'
 import { type GroupedOrdersTableProps } from './grouped-procedure-types';
 
 import styles from './grouped-orders-table.scss';
+import { useQueueEntries } from '../../../queues-form-extension/queue-form-extension.resources';
 
-const GroupedOrdersTable: React.FC<GroupedOrdersTableProps> = (props) => {
+const GroupedOrdersTable: React.FC<GroupedOrdersTableProps & { queue?: string }> = (props) => {
   const workListEntries = props.orders;
   const { t } = useTranslation();
   const responseSize = useLayoutType() === 'tablet' ? 'md' : 'sm';
   const [currentPageSize] = useState<number>(10);
   const [searchString, setSearchString] = useState<string>('');
+  const { queueEntries, isLoading, error } = useQueueEntries({ queues: [props?.queue] });
 
   function groupOrdersById(orders) {
     if (orders && orders.length > 0) {
@@ -58,14 +60,24 @@ const GroupedOrdersTable: React.FC<GroupedOrdersTableProps> = (props) => {
     }
   }
   const groupedOrdersByPatient = groupOrdersById(workListEntries);
-  const searchResults = useSearchGroupedResults(groupedOrdersByPatient, searchString);
+  const patientInCurrentQueue = groupedOrdersByPatient.filter((patient) =>
+    queueEntries.some((entry) => entry.patient.uuid === patient.patientId),
+  );
+  const searchResults = useSearchGroupedResults(patientInCurrentQueue, searchString);
   const { goTo, results: paginatedResults, currentPage } = usePagination(searchResults, currentPageSize);
   const { pageSizes } = usePaginationInfo(currentPageSize, currentPageSize, currentPage, paginatedResults.length);
 
   const rowData = useMemo(() => {
     return paginatedResults.map((patient) => ({
       id: patient.patientId,
-      patientName: upperCase(patient.orders[0].patient?.person?.display),
+      patientName: (
+        <ConfigurableLink
+          to={'${openmrsSpaBase}/patient/${patientUuid}/chart/Patient Summary'}
+          templateParams={{ patientUuid: patient.orders[0].patient?.person?.uuid }}
+          style={{ textDecoration: 'none' }}>
+          {upperCase(patient.orders[0].patient?.person?.display)}
+        </ConfigurableLink>
+      ),
       patientAge: patient?.orders[0]?.patient?.person?.age,
       patientGender:
         patient?.orders[0]?.patient?.person?.gender === 'M'

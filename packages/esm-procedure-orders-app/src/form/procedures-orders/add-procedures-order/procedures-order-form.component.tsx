@@ -9,6 +9,7 @@ import {
   ExtensionSlot,
   type Workspace2DefinitionProps,
   type Visit,
+  showSnackbar,
 } from '@openmrs/esm-framework';
 import { careSettingUuid, prepProceduresOrderPostData, useOrderReasons, useConceptById, type Concept } from '../api';
 import {
@@ -33,9 +34,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { type ConfigObject } from '../../../config-schema';
 import styles from './procedures-order-form.scss';
-import type { ProcedureOrderBasketItem, OrderFrequency } from '../../../types';
+import type { ProcedureOrderBasketItem, OrderFrequency, QueueRoom } from '../../../types';
 import { useOrderConfig } from '../order-config';
 import { moduleName } from '../../../constants';
+import QueueFields from '../../../queues-form-extension/queue-fields.component';
+import { addPatientToQueue } from '../../../queues-form-extension/queue-form-extension.resources';
+import type { Queue } from '../../../queues-form-extension/queues.types';
 
 export interface ProceduresOrderFormProps {
   initialOrder: ProcedureOrderBasketItem;
@@ -63,6 +67,7 @@ export function ProceduresOrderForm({
   );
   const { testTypes, isLoading: isLoadingTestTypes, error: errorLoadingTestTypes } = useProceduresTypes();
   const [showErrorNotification, setShowErrorNotification] = useState(false);
+  const [queue, setQueue] = useState<Queue | undefined>();
   const {
     items: { answers: specimenSourceItems },
     isLoading: isLoadingSpecimenSourceItems,
@@ -142,6 +147,7 @@ export function ProceduresOrderForm({
 
   const handleFormSubmission = useCallback(
     (data: ProcedureOrderBasketItem) => {
+      // Save to basket
       data.action = 'NEW';
       data.careSetting = careSettingUuid;
       data.orderer = session.currentProvider.uuid;
@@ -150,9 +156,57 @@ export function ProceduresOrderForm({
       const orderIndex = existingOrder ? orders.indexOf(existingOrder) : orders.length;
       newOrders[orderIndex] = data;
       setOrders(newOrders);
+      // Move patient to the queue room if a room was selected in the QueueFields component
+      if (queue) {
+        addPatientToQueue({
+          visit: {
+            uuid: visitContext.uuid,
+          },
+          queueEntry: {
+            status: {
+              uuid: config.queueStatusConcepts.waiting,
+            },
+            priority: {
+              uuid: '',
+            },
+            queue: {
+              uuid: queue?.uuid,
+            },
+            patient: {
+              uuid: patient.id,
+            },
+            startedAt: new Date(),
+            sortWeight: 0,
+          },
+        })
+          .then(() => {
+            showSnackbar({
+              title: t('success', 'Success'),
+              subtitle: t('addedToQueue', 'Patient added to queue'),
+            });
+          })
+          .catch((e) => {
+            showSnackbar({
+              title: t('error', 'Error'),
+              subtitle: t('errorAddingToQueue', 'An error occurred while adding the patient to the queue'),
+            });
+          });
+      }
+
       closeWorkspace();
     },
-    [orders, setOrders, closeWorkspace, session?.currentProvider?.uuid, defaultValues, setHasUnsavedChanges],
+    [
+      session.currentProvider.uuid,
+      orders,
+      setOrders,
+      queue,
+      closeWorkspace,
+      defaultValues.testType.conceptUuid,
+      visitContext.uuid,
+      config.queueStatusConcepts.waiting,
+      patient.id,
+      t,
+    ],
   );
 
   const cancelOrder = useCallback(() => {
@@ -438,30 +492,7 @@ export function ProceduresOrderForm({
               </InputWrapper>
             </Column>
           </Grid>
-          <Grid className={styles.gridRow}>
-            <Column lg={16} md={8} sm={4}>
-              <InputWrapper>
-                <Controller
-                  name="commentsToFulfiller"
-                  control={control}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextArea
-                      enableCounter
-                      id="commentsToFulfillerInput"
-                      size={8}
-                      labelText={t('commentsToFulfiller', 'Comments To Fulfiller')}
-                      value={value}
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      maxCount={500}
-                      invalid={!!errors.commentsToFulfiller?.message}
-                      invalidText={errors.commentsToFulfiller?.message}
-                    />
-                  )}
-                />
-              </InputWrapper>
-            </Column>
-          </Grid>
+          <QueueFields onChange={setQueue} patientUuid={patient.id} value={queue} />
         </div>
         <div>
           {showErrorNotification && (
@@ -489,7 +520,7 @@ export function ProceduresOrderForm({
   );
 }
 
-function InputWrapper({ children }) {
+export function InputWrapper({ children }) {
   const isTablet = useLayoutType() === 'tablet';
   return (
     <Layer level={isTablet ? 1 : 0}>
