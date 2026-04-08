@@ -192,8 +192,7 @@ export function ProceduresOrderForm({
             });
           });
       }
-
-      closeWorkspace();
+      closeWorkspace({ discardUnsavedChanges: true });
     },
     [
       session.currentProvider.uuid,

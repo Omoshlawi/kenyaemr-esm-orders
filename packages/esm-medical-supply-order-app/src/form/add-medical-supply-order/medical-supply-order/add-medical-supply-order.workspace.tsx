@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@carbon/react';
 import { ArrowLeft } from '@carbon/react/icons';
-import { launchWorkspace, useLayoutType, Workspace2, Workspace2DefinitionProps } from '@openmrs/esm-framework';
+import { useLayoutType, Workspace2 } from '@openmrs/esm-framework';
 import { MedicalSupplyTypeSearch } from './medical-supply-type-search';
 import { MedicalSupplyOrderForm } from './medical-supply-form.component';
 import styles from './add-medical-supply-order.scss';
@@ -47,6 +47,7 @@ export default function AddMedicalSupplyOrderWorkspace({
           openMedicalSupplyForm={setCurrentMedicalSupplyOrder}
           patient={patient}
           visitContext={visitContext}
+          closeWorkspace={closeWorkspace}
         />
       </Workspace2>
     );

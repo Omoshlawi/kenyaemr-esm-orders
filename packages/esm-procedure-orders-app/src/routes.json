@@ -161,15 +161,6 @@
       "route": "procedure"
     }
   ],
-  "workspaceGroups": [
-    {
-      "name": "add-procedures-order-workspace-group",
-      "members": [
-        "order-basket",
-        "add-procedures-order"
-      ]
-    }
-  ],
   "workspaces2":[
     {
       "name": "add-procedures-order",

@@ -8,9 +8,8 @@ import {
   useLayoutType,
   useSession,
   ResponsiveWrapper,
-  closeWorkspace,
-  launchWorkspace,
   type Visit,
+  type Workspace2DefinitionProps,
 } from '@openmrs/esm-framework';
 import { useOrderBasket } from '@openmrs/esm-patient-common-lib';
 import { prepProceduresOrderPostData } from '../api';
@@ -23,9 +22,10 @@ export interface TestTypeSearchProps {
   openLabForm: (searchResult: ProcedureOrderBasketItem) => void;
   patient: fhir.Patient;
   visitContext: Visit;
+  closeWorkspace: Workspace2DefinitionProps['closeWorkspace'];
 }
 
-export function TestTypeSearch({ openLabForm, patient, visitContext }: TestTypeSearchProps) {
+export function TestTypeSearch({ openLabForm, patient, visitContext, closeWorkspace }: TestTypeSearchProps) {
   const { t } = useTranslation();
   const isTablet = useLayoutType() === 'tablet';
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,6 +60,7 @@ export function TestTypeSearch({ openLabForm, patient, visitContext }: TestTypeS
         focusAndClearSearchInput={focusAndClearSearchInput}
         patient={patient}
         visitContext={visitContext}
+        closeWorkspace={closeWorkspace}
       />
     </>
   );
@@ -71,6 +72,7 @@ interface TestTypeSearchResultsProps {
   focusAndClearSearchInput: () => void;
   patient: fhir.Patient;
   visitContext: Visit;
+  closeWorkspace: Workspace2DefinitionProps['closeWorkspace'];
 }
 
 function TestTypeSearchResults({
@@ -79,6 +81,7 @@ function TestTypeSearchResults({
   focusAndClearSearchInput,
   patient,
   visitContext,
+  closeWorkspace,
 }: TestTypeSearchResultsProps) {
   const { t } = useTranslation();
   const isTablet = useLayoutType() === 'tablet';
@@ -130,6 +133,7 @@ function TestTypeSearchResults({
                 openOrderForm={openOrderForm}
                 patient={patient}
                 visitContext={visitContext}
+                closeWorkspace={closeWorkspace}
               />
             ))}
           </div>
@@ -162,6 +166,7 @@ interface TestTypeSearchResultItemProps {
   openOrderForm: (searchResult: ProcedureOrderBasketItem) => void;
   patient: fhir.Patient;
   visitContext: Visit;
+  closeWorkspace: Workspace2DefinitionProps['closeWorkspace'];
 }
 
 const TestTypeSearchResultItem: React.FC<TestTypeSearchResultItemProps> = ({
@@ -169,6 +174,7 @@ const TestTypeSearchResultItem: React.FC<TestTypeSearchResultItemProps> = ({
   openOrderForm,
   patient,
   visitContext,
+  closeWorkspace,
 }) => {
   const isTablet = useLayoutType() === 'tablet';
   const session = useSession();
@@ -192,14 +198,12 @@ const TestTypeSearchResultItem: React.FC<TestTypeSearchResultItemProps> = ({
   const { t } = useTranslation();
 
   const addToBasket = useCallback(() => {
-    const labOrder = createLabOrder(testType);
-    labOrder.isOrderIncomplete = true;
-    setOrders([...orders, labOrder]);
-    closeWorkspace('add-procedures-order', {
-      ignoreChanges: true,
-      onWorkspaceClose: () => launchWorkspace('order-basket'),
-    });
+    const procedureOrder = createLabOrder(testType);
+    procedureOrder.isOrderIncomplete = true;
+    setOrders([...orders, procedureOrder]);
+    closeWorkspace();
   }, [orders, setOrders, createLabOrder, testType]);
+
 
   const removeFromBasket = useCallback(() => {
     setOrders(orders.filter((order) => order.testType.conceptUuid !== testType.conceptUuid));
