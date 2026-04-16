@@ -39,7 +39,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({ action, order, patientUuid 
     case 'reject-procedure-order-dialog':
       return (
         <Button
-          kind={action.actionName === 'reject-procedure-order-dialog' ? 'danger' : 'tertiary'}
+          kind={'danger'}
           onClick={() => {
             const dispose = showModal(action.actionName, {
               closeModal: () => dispose(),
@@ -48,14 +48,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({ action, order, patientUuid 
           }}
           size="md"
           className={styles.actionButtons}>
-          {t(
-            action.actionName.replace(/-/g, ''),
-            action.actionName
-              .split('-')
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ')
-              .replace('Modal', ''),
-          )}
+          {t('rejectProcedureOrderDialog', 'Reject Procedure Order')}
         </Button>
       );
 
