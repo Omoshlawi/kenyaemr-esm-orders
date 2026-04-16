@@ -15,7 +15,7 @@
     "analyze": "rspack build --mode=production --analyze",
     "lint": "eslint src --ext ts,tsx --ignore-pattern '**/*.test.ts' --ignore-pattern '**/*.test.tsx' --ignore-pattern '**/__tests__/**'",
     "typescript": "tsc",
-    "extract-translations": "i18next 'src/**/*.component.tsx' 'src/index.ts' --config ../../tools/i18next-parser.config.js",
+    "extract-translations": "i18next 'src/**/*.{ts,tsx}' --config ../../tools/i18next-parser.config.js",
     "test": "cross-env TZ=UTC jest --config jest.config.js --verbose false --passWithNoTests",
     "test:watch": "cross-env TZ=UTC jest --watch --config jest.config.js",
     "coverage": "yarn test --coverage"

@@ -80,14 +80,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({ action, order, patientUuid,
                 order: order,
               });
             }}>
-            {t(
-              action.actionName.replace(/-/g, ''),
-              action.actionName
-                .split('-')
-                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ')
-                .replace('Modal', ''),
-            )}
+            {t('rejectImagingOrder', 'Reject Imaging Order')}
           </Button>
         );
 
