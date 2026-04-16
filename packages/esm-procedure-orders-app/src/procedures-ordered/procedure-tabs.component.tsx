@@ -1,25 +1,31 @@
 import React, { useState } from 'react';
-import { type AssignedExtension, Extension, useConnectedExtensions } from '@openmrs/esm-framework';
+import { type AssignedExtension, Extension, useAssignedExtensions } from '@openmrs/esm-framework';
 import { Tab, Tabs, TabList, TabPanels, TabPanel } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
 import styles from './procedure-queue.scss';
 import ProcedureOrderedList from './procedures-ordered-list.component';
 import { ComponentContext } from '@openmrs/esm-framework/src/internal';
 import { useProcedureOrderStats } from '../summary-tiles/procedure-summary.resource';
+import type { Result } from '../types';
 
 const procedurePanelSlot = 'procedures-panels-slot';
 
-const ProcedureOrdersTabs: React.FC = () => {
+// The props are only passed for queued workflow from express-workflow-app
+type ProcedureOrdersTabsProps = {
+  filterByOrder?: (order: Result) => boolean;
+  filterByPatient?: (patientUuid: string) => boolean;
+};
+const ProcedureOrdersTabs: React.FC<ProcedureOrdersTabsProps> = ({ filterByOrder, filterByPatient }) => {
   const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState(0);
-  const tabExtensions = useConnectedExtensions(procedurePanelSlot) as AssignedExtension[];
+  const tabExtensions = useAssignedExtensions(procedurePanelSlot) as AssignedExtension[];
 
   // Get individual statistics each tab using their fulfillerstatus
-  const activeOrdersStats = useProcedureOrderStats('');
-  const inProgressStats = useProcedureOrderStats('IN_PROGRESS');
-  const referredStats = useProcedureOrderStats('EXCEPTION');
-  const notDoneStats = useProcedureOrderStats('DECLINED');
-  const completedStats = useProcedureOrderStats('COMPLETED');
+  const activeOrdersStats = useProcedureOrderStats('', filterByOrder);
+  const inProgressStats = useProcedureOrderStats('IN_PROGRESS', filterByOrder);
+  const referredStats = useProcedureOrderStats('EXCEPTION', filterByOrder);
+  const notDoneStats = useProcedureOrderStats('DECLINED', filterByOrder);
+  const completedStats = useProcedureOrderStats('COMPLETED', filterByOrder);
 
   // Returns appropriate statistics based on their tab names
   const getStatsForTab = (tabName: string) => {
@@ -68,7 +74,7 @@ const ProcedureOrdersTabs: React.FC = () => {
           </TabList>
           <TabPanels>
             <TabPanel style={{ padding: 0 }}>
-              <ProcedureOrderedList fulfillerStatus="NEW" />
+              <ProcedureOrderedList fulfillerStatus="NEW" filterByPatient={filterByPatient} />
             </TabPanel>
             {tabExtensions
               .filter((extension) => Object.keys(extension.meta).length > 0)
@@ -86,7 +92,7 @@ const ProcedureOrdersTabs: React.FC = () => {
                           extensionSlotModuleName: extension.moduleName,
                         },
                       }}>
-                      <Extension />
+                      <Extension state={{ filterByOrder, filterByPatient }} />
                     </ComponentContext.Provider>
                   </TabPanel>
                 );

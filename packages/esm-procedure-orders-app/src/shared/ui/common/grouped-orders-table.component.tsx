@@ -15,7 +15,7 @@ import {
   Button,
   Pagination,
 } from '@carbon/react';
-import { restBaseUrl, useLayoutType, usePagination } from '@openmrs/esm-framework';
+import { ConfigurableLink, restBaseUrl, useLayoutType, usePagination } from '@openmrs/esm-framework';
 import { CardHeader, usePaginationInfo } from '@openmrs/esm-patient-common-lib';
 import upperCase from 'lodash-es/upperCase';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +31,11 @@ import { type GroupedOrdersTableProps } from './grouped-procedure-types';
 
 import styles from './grouped-orders-table.scss';
 
-const GroupedOrdersTable: React.FC<GroupedOrdersTableProps> = (props) => {
+const GroupedOrdersTable: React.FC<
+  GroupedOrdersTableProps & {
+    filterByPatient?: (patientUuid: string) => boolean;
+  }
+> = (props) => {
   const workListEntries = props.orders;
   const { t } = useTranslation();
   const responseSize = useLayoutType() === 'tablet' ? 'md' : 'sm';
@@ -58,14 +62,25 @@ const GroupedOrdersTable: React.FC<GroupedOrdersTableProps> = (props) => {
     }
   }
   const groupedOrdersByPatient = groupOrdersById(workListEntries);
-  const searchResults = useSearchGroupedResults(groupedOrdersByPatient, searchString);
+  // Apply queue filters defined in express workflow app
+  const filteredPatients = props.filterByPatient
+    ? groupedOrdersByPatient.filter((patient) => props.filterByPatient(patient.patientId))
+    : groupedOrdersByPatient;
+  const searchResults = useSearchGroupedResults(filteredPatients, searchString);
   const { goTo, results: paginatedResults, currentPage } = usePagination(searchResults, currentPageSize);
   const { pageSizes } = usePaginationInfo(currentPageSize, currentPageSize, currentPage, paginatedResults.length);
 
   const rowData = useMemo(() => {
     return paginatedResults.map((patient) => ({
       id: patient.patientId,
-      patientName: upperCase(patient.orders[0].patient?.person?.display),
+      patientName: (
+        <ConfigurableLink
+          to={'${openmrsSpaBase}/patient/${patientUuid}/chart/Patient Summary'}
+          templateParams={{ patientUuid: patient.orders[0].patient?.person?.uuid }}
+          style={{ textDecoration: 'none' }}>
+          {upperCase(patient.orders[0].patient?.person?.display)}
+        </ConfigurableLink>
+      ),
       patientAge: patient?.orders[0]?.patient?.person?.age,
       patientGender:
         patient?.orders[0]?.patient?.person?.gender === 'M'

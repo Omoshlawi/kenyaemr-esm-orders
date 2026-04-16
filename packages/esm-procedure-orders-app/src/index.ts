@@ -91,3 +91,5 @@ export const procedureOrderSearchPatientWorkspace = getAsyncLifecycle(
   () => import('./form/search-patient-workspace/search-patient.workspace'),
   options,
 );
+
+export const procedureOrderedTabs = getAsyncLifecycle(() => import('./procedures-ordered/procedure-tabs.component'), options);
