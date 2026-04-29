@@ -31,13 +31,13 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders, sho
         id: entry.uuid,
         orderNumber: entry.orderNumber,
         procedure: entry.display,
-        status: entry.fulfillerStatus ? entry.fulfillerStatus : '--',
-        urgency: entry.urgency,
+        status: entry.fulfillerStatus ? t(entry.fulfillerStatus) : '--',
+        urgency: entry.urgency ? t(entry.urgency) : '--',
         orderer: entry.orderer?.display,
         instructions: entry.instructions ? entry.instructions : '--',
         date: <span className={styles['single-line-display']}>{formatDate(parseDate(entry?.dateActivated))}</span>,
       }));
-  }, [orders]);
+  }, [orders, t]);
 
   const { diagnoses, isLoading } = usePatientDiagnosis(orders[0]?.patient?.uuid);
   if (isLoading) {
@@ -61,7 +61,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders, sho
             <span className={styles.urgencyStatus}>
               {t('orderStatus', 'Status:')}
               <Tag size="lg" type="warm-gray">
-                {row.fulfillerStatus || t('orderNotPicked', 'Order not picked')}
+                {row.fulfillerStatus ? t(row.fulfillerStatus) : t('orderNotPicked', 'Order not picked')}
               </Tag>
             </span>
           </div>
@@ -84,7 +84,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders, sho
             <span className={styles.urgencyStatus}>
               {t('urgencyStatus', 'Urgency: ')}
               <Tag size="lg" type="warm-gray">
-                {capitalize(row.urgency || '--')}
+                {row.urgency}
               </Tag>
             </span>
           </div>

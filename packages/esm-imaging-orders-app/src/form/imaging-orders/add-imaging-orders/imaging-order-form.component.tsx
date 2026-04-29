@@ -25,7 +25,6 @@ import {
   TextArea,
 } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
-import { priorityOptions } from './imaging-order';
 import { useImagingTypes } from './useImagingTypes';
 import { Controller, type FieldErrors, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -58,9 +57,15 @@ export function ImagingOrderForm({
   const [showErrorNotification, setShowErrorNotification] = useState(false);
 
   const lateralityItems = [
-    { value: 'LEFT', label: 'Left' },
-    { value: 'RIGHT', label: 'Right' },
-    { value: 'BILATERAL', label: 'Bilateral' },
+    { value: 'LEFT', label: t('LEFT', 'Left') },
+    { value: 'RIGHT', label: t('RIGHT', 'Right') },
+    { value: 'BILATERAL', label: t('BILATERAL', 'Bilateral') },
+  ];
+  // See the Urgency enum in https://github.com/openmrs/openmrs-core/blob/492dcd35b85d48730bd19da48f6db146cc882c22/api/src/main/java/org/openmrs/Order.java
+  const priorityOptions = [
+    { value: 'ROUTINE', label: t('ROUTINE', 'Routine') },
+    { value: 'STAT', label: t('STAT', 'Stat') },
+    { value: 'ON_SCHEDULED_DATE', label: t('ON_SCHEDULED_DATE', 'Scheduled') },
   ];
 
   const imagingOrderFormSchema = z.object({
