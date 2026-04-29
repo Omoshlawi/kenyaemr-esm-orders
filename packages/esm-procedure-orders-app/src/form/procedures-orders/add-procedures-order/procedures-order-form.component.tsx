@@ -51,7 +51,7 @@ export function ProceduresOrderForm({
   patient,
   visitContext,
 }: ProceduresOrderFormProps) {
-  const { t } = useTranslation('@kenyaemr/esm-procedure-orders-app');
+  const { t } = useTranslation();
   const isTablet = useLayoutType() === 'tablet';
   const session = useSession();
   const { orderConfigObject, isLoading: isLoadingOrderConfig, error: errorFetchingOrderConfig } = useOrderConfig();
