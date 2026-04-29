@@ -26,7 +26,6 @@ import {
   NumberInput,
 } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
-import { categoryItems, priorityOptions } from './procedures-order';
 import { useProceduresTypes } from './useProceduresTypes';
 import { Controller, type FieldErrors, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -81,6 +80,17 @@ export function ProceduresOrderForm({
   const {
     items: { answers: bodySiteItems },
   } = useConceptById('162668AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+
+  const priorityOptions = [
+    { value: 'STAT', label: t('STAT', 'Emergency') },
+    { value: 'ROUTINE', label: t('ROUTINE', 'Elective') },
+    // { value: 'ON_SCHEDULED_DATE', label: t('ON_SCHEDULED_DATE', 'Scheduled') },
+  ];
+
+  const categoryItems = [
+    { value: '3c3946b1-d71d-41b3-a2e4-2d755006200a', label: t('minor', 'Minor') },
+    { value: '3798940f-87b8-464e-b36a-17da246f034e', label: t('major', 'Major') },
+  ];
 
   const proceduresOrderFormSchema = z.object({
     instructions: z.string().optional(),

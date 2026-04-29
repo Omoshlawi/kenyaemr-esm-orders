@@ -47,7 +47,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders, sho
             <span className={styles.urgencyStatus}>
               {t('orderStatus', 'Status:')}
               <Tag size="lg" type="warm-gray">
-                {capitalize(row.fulfillerStatus) || t('orderNotPicked', 'Order not picked')}
+                {row.fulfillerStatus ? t(row.fulfillerStatus) : t('orderNotPicked', 'Order not picked')}
               </Tag>
             </span>
           </div>
@@ -68,9 +68,9 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders, sho
               )}
             </span>
             <span className={styles.urgencyStatus}>
-              {t('urgencyStatus', 'Urgency: ')}
+              {t('urgencyStatus', 'Urgency:')}
               <Tag size="lg" type="warm-gray">
-                {capitalize(row.urgency || '--')}
+                {row.urgency ? t(row.urgency) : '--'}
               </Tag>
             </span>
           </div>
