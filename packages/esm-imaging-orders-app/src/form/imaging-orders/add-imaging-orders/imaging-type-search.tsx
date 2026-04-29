@@ -196,7 +196,7 @@ const TestTypeSearchResultItem: React.FC<TestTypeSearchResultItemProps> = ({
     const labOrder = createLabOrder(testType);
     labOrder.isOrderIncomplete = true;
     setOrders([...orders, labOrder]);
-    closeWorkspace();
+    closeWorkspace({ discardUnsavedChanges: true });
   }, [orders, setOrders, createLabOrder, testType]);
 
   const removeFromBasket = useCallback(() => {

@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { mutate } from 'swr';
 import { useTranslation } from 'react-i18next';
 import {
   ExtensionSlot,
-  launchWorkspaceGroup,
   setCurrentVisit,
   useVisit,
   showSnackbar,

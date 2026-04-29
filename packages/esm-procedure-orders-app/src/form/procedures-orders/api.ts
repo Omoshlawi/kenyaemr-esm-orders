@@ -1,5 +1,5 @@
 import useSWR, { mutate } from 'swr';
-import { type FetchResponse, openmrsFetch, useConfig, restBaseUrl, showSnackbar } from '@openmrs/esm-framework';
+import { type FetchResponse, openmrsFetch, useConfig, restBaseUrl, showSnackbar, type OpenmrsResource } from '@openmrs/esm-framework';
 import { type ConfigObject } from '../../config-schema';
 import { useCallback, useMemo } from 'react';
 import type { OrderPost, PatientOrderFetchResponse } from '@openmrs/esm-patient-common-lib';
@@ -266,6 +266,7 @@ export interface Concept extends BaseOpenmrsObject, Auditable, Retireable {
   shortName: ConceptName;
   fullySpecifiedName: ConceptName;
   answers: Concept[];
+  conceptClass: OpenmrsResource;
 }
 
 export function useConceptById(id: string) {

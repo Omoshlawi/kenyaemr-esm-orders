@@ -27,10 +27,9 @@ export interface TestTypeSearchProps {
 
 export function TestTypeSearch({ openLabForm, patient, visitContext, closeWorkspace }: TestTypeSearchProps) {
   const { t } = useTranslation();
-  const isTablet = useLayoutType() === 'tablet';
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm);
-  const searchInputRef = useRef(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const focusAndClearSearchInput = () => {
     setSearchTerm('');
@@ -184,7 +183,7 @@ const TestTypeSearchResultItem: React.FC<TestTypeSearchResultItemProps> = ({
     prepProceduresOrderPostData,
   );
   const testTypeAlreadyInBasket = useMemo(
-    () => orders?.some((order) => order.testType.conceptUuid === testType.conceptUuid),
+    () => orders?.some((order) => order.testType?.conceptUuid === testType.conceptUuid),
     [orders, testType],
   );
 
@@ -201,9 +200,8 @@ const TestTypeSearchResultItem: React.FC<TestTypeSearchResultItemProps> = ({
     const procedureOrder = createLabOrder(testType);
     procedureOrder.isOrderIncomplete = true;
     setOrders([...orders, procedureOrder]);
-    closeWorkspace();
+    closeWorkspace({ discardUnsavedChanges: true });
   }, [orders, setOrders, createLabOrder, testType]);
-
 
   const removeFromBasket = useCallback(() => {
     setOrders(orders.filter((order) => order.testType.conceptUuid !== testType.conceptUuid));

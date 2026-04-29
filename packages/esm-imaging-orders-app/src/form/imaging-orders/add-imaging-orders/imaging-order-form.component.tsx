@@ -4,9 +4,7 @@ import { useOrderBasket } from '@openmrs/esm-patient-common-lib';
 import {
   useLayoutType,
   useSession,
-  type DefaultWorkspaceProps,
   ExtensionSlot,
-  launchWorkspace,
   translateFrom,
   type Workspace2DefinitionProps,
 } from '@openmrs/esm-framework';
@@ -106,17 +104,17 @@ export function ImagingOrderForm({
       data.careSetting = careSettingUuid;
       data.orderer = session.currentProvider.uuid;
       const newOrders = [...orders];
-      const existingOrder = orders.find((order) => order.testType.conceptUuid == defaultValues.testType.conceptUuid);
+      const existingOrder = orders.find((order) => order.testType?.conceptUuid == defaultValues.testType?.conceptUuid);
       const orderIndex = existingOrder ? orders.indexOf(existingOrder) : orders.length;
       newOrders[orderIndex] = data;
       setOrders(newOrders);
-      closeWorkspace();
+      closeWorkspace({ discardUnsavedChanges: true });
     },
     [orders, setOrders, defaultValues, closeWorkspace, session],
   );
 
   const cancelOrder = useCallback(() => {
-    setOrders(orders.filter((order) => order.testType.conceptUuid !== defaultValues.testType.conceptUuid));
+    setOrders(orders.filter((order) => order.testType?.conceptUuid !== defaultValues.testType?.conceptUuid));
     closeWorkspace();
   }, [closeWorkspace, orders, setOrders, defaultValues]);
 
