@@ -51,7 +51,7 @@ export function ProceduresOrderForm({
   patient,
   visitContext,
 }: ProceduresOrderFormProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('@kenyaemr/esm-procedure-orders-app');
   const isTablet = useLayoutType() === 'tablet';
   const session = useSession();
   const { orderConfigObject, isLoading: isLoadingOrderConfig, error: errorFetchingOrderConfig } = useOrderConfig();
@@ -81,15 +81,14 @@ export function ProceduresOrderForm({
     items: { answers: bodySiteItems },
   } = useConceptById('162668AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
 
+  const categoryItems = [
+    { value: '3c3946b1-d71d-41b3-a2e4-2d755006200a', label: t('minor', 'Minor') },
+    { value: '3798940f-87b8-464e-b36a-17da246f034e', label: t('major', 'Major') },
+  ];
   const priorityOptions = [
     { value: 'STAT', label: t('STAT', 'Emergency') },
     { value: 'ROUTINE', label: t('ROUTINE', 'Elective') },
     // { value: 'ON_SCHEDULED_DATE', label: t('ON_SCHEDULED_DATE', 'Scheduled') },
-  ];
-
-  const categoryItems = [
-    { value: '3c3946b1-d71d-41b3-a2e4-2d755006200a', label: t('minor', 'Minor') },
-    { value: '3798940f-87b8-464e-b36a-17da246f034e', label: t('major', 'Major') },
   ];
 
   const proceduresOrderFormSchema = z.object({
@@ -162,7 +161,7 @@ export function ProceduresOrderForm({
       setOrders(newOrders);
       closeWorkspace({ discardUnsavedChanges: true });
     },
-    [orders, setOrders, closeWorkspace, session?.currentProvider?.uuid, defaultValues, setHasUnsavedChanges],
+    [orders, setOrders, closeWorkspace, session.currentProvider.uuid, defaultValues],
   );
 
   const cancelOrder = useCallback(() => {
@@ -251,20 +250,21 @@ export function ProceduresOrderForm({
                 <Controller
                   name="urgency"
                   control={control}
-                  render={({ field: { onChange, onBlur, value } }) => (
+                  render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
                     <ComboBox
                       size="lg"
                       id="priorityInput"
                       titleText={t('priority', 'Priority')}
                       selectedItem={priorityOptions.find((option) => option.value === value) || null}
-                      items={priorityOptions ?? []}
+                      items={priorityOptions}
+                      placeholder={t('selectPriority', 'Select priority')}
                       onBlur={onBlur}
                       onChange={({ selectedItem }) => {
                         onChange(selectedItem?.value || '');
-                        setShowScheduleDate(selectedItem?.label === 'Scheduled');
+                        setShowScheduleDate(selectedItem?.value === 'ON_SCHEDULED_DATE');
                       }}
-                      invalid={!!errors.urgency?.message}
-                      invalidText={errors.urgency?.message ?? ''}
+                      invalid={!!error?.message}
+                      invalidText={error?.message}
                     />
                   )}
                 />
