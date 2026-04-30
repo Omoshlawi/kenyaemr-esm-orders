@@ -261,7 +261,7 @@ export function ImagingOrderForm({
                       enableCounter
                       id="orderReasonNonCodedInput"
                       size={8}
-                      labelText={'Order Reason'}
+                      labelText={t('orderReason', 'Order Reason')}
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
