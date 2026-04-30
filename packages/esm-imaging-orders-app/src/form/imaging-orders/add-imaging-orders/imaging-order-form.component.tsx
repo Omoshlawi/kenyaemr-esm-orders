@@ -4,9 +4,7 @@ import { useOrderBasket } from '@openmrs/esm-patient-common-lib';
 import {
   useLayoutType,
   useSession,
-  type DefaultWorkspaceProps,
   ExtensionSlot,
-  launchWorkspace,
   translateFrom,
   type Workspace2DefinitionProps,
 } from '@openmrs/esm-framework';
@@ -25,7 +23,6 @@ import {
   TextArea,
 } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
-import { priorityOptions } from './imaging-order';
 import { useImagingTypes } from './useImagingTypes';
 import { Controller, type FieldErrors, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -58,9 +55,15 @@ export function ImagingOrderForm({
   const [showErrorNotification, setShowErrorNotification] = useState(false);
 
   const lateralityItems = [
-    { value: 'LEFT', label: 'Left' },
-    { value: 'RIGHT', label: 'Right' },
-    { value: 'BILATERAL', label: 'Bilateral' },
+    { value: 'LEFT', label: t('LEFT', 'Left') },
+    { value: 'RIGHT', label: t('RIGHT', 'Right') },
+    { value: 'BILATERAL', label: t('BILATERAL', 'Bilateral') },
+  ];
+  // See the Urgency enum in https://github.com/openmrs/openmrs-core/blob/492dcd35b85d48730bd19da48f6db146cc882c22/api/src/main/java/org/openmrs/Order.java
+  const priorityOptions = [
+    { value: 'ROUTINE', label: t('ROUTINE', 'Routine') },
+    { value: 'STAT', label: t('STAT', 'Stat') },
+    { value: 'ON_SCHEDULED_DATE', label: t('ON_SCHEDULED_DATE', 'Scheduled') },
   ];
 
   const imagingOrderFormSchema = z.object({
@@ -101,17 +104,17 @@ export function ImagingOrderForm({
       data.careSetting = careSettingUuid;
       data.orderer = session.currentProvider.uuid;
       const newOrders = [...orders];
-      const existingOrder = orders.find((order) => order.testType.conceptUuid == defaultValues.testType.conceptUuid);
+      const existingOrder = orders.find((order) => order.testType?.conceptUuid == defaultValues.testType?.conceptUuid);
       const orderIndex = existingOrder ? orders.indexOf(existingOrder) : orders.length;
       newOrders[orderIndex] = data;
       setOrders(newOrders);
-      closeWorkspace();
+      closeWorkspace({ discardUnsavedChanges: true });
     },
     [orders, setOrders, defaultValues, closeWorkspace, session],
   );
 
   const cancelOrder = useCallback(() => {
-    setOrders(orders.filter((order) => order.testType.conceptUuid !== defaultValues.testType.conceptUuid));
+    setOrders(orders.filter((order) => order.testType?.conceptUuid !== defaultValues.testType?.conceptUuid));
     closeWorkspace();
   }, [closeWorkspace, orders, setOrders, defaultValues]);
 
@@ -258,7 +261,7 @@ export function ImagingOrderForm({
                       enableCounter
                       id="orderReasonNonCodedInput"
                       size={8}
-                      labelText={'Order Reason'}
+                      labelText={t('orderReason', 'Order Reason')}
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}

@@ -43,7 +43,7 @@ function useProceduresConceptsSWR(labOrderableConcepts?: Array<string>) {
 
   const results = useMemo(() => {
     if (isLoading || error) {
-      return null;
+      return [];
     }
     return labOrderableConcepts
       ? (data as Array<ConceptResult>)?.flatMap((d) => d.data.setMembers)
@@ -60,11 +60,14 @@ function useProceduresConceptsSWR(labOrderableConcepts?: Array<string>) {
 export function useProceduresTypes(searchTerm = ''): UseProceduresType {
   const {
     orders: { labOrderableConcepts },
+    procedureConceptClassUuid
   } = useConfig<ConfigObject>();
 
   const { data, isLoading, error } = useProceduresConceptsSWR(
-    labOrderableConcepts.length ? labOrderableConcepts : null,
+    labOrderableConcepts.length ? labOrderableConcepts : undefined,
   );
+
+  const filteredData = data?.filter((concept) => concept.conceptClass?.uuid === procedureConceptClassUuid);
 
   useEffect(() => {
     if (error) {
@@ -73,11 +76,11 @@ export function useProceduresTypes(searchTerm = ''): UseProceduresType {
   }, [error]);
 
   const testConcepts = useMemo(() => {
-    return data?.map((concept) => ({
+    return filteredData?.map((concept) => ({
       label: concept.display,
       conceptUuid: concept.uuid,
     }));
-  }, [data]);
+  }, [filteredData]);
 
   const filteredTestTypes = useMemo(() => {
     return searchTerm && !isLoading && !error
