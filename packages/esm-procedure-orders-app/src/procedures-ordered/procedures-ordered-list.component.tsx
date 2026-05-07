@@ -1,13 +1,14 @@
+import { DataTableSkeleton } from '@carbon/react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useOrdersWorklist } from '../hooks/useOrdersWorklist';
 import GroupedOrdersTable from '../shared/ui/common/grouped-orders-table.component';
-import { DataTableSkeleton } from '@carbon/react';
-import { useTranslation } from 'react-i18next';
 interface ProcedurePatientListProps {
   fulfillerStatus: string;
+  filterByPatient?: (patientUuid: string) => boolean;
 }
 
-const ProcedureOrderedList: React.FC<ProcedurePatientListProps> = () => {
+const ProcedureOrderedList: React.FC<ProcedurePatientListProps> = ({ filterByPatient }) => {
   const { t } = useTranslation();
   const { workListEntries, isLoading } = useOrdersWorklist('', '');
 
@@ -30,6 +31,7 @@ const ProcedureOrderedList: React.FC<ProcedurePatientListProps> = () => {
           },
           { actionName: 'reject-procedure-order-dialog' },
         ]}
+        filterByPatient={filterByPatient}
       />
     );
   }

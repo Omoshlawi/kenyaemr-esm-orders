@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import React, { useCallback, useEffect, useState, useMemo, useRef } from 'react';
 import classNames from 'classnames';
 import { useOrderBasket } from '@openmrs/esm-patient-common-lib';
 import {
@@ -150,7 +150,7 @@ export function ProceduresOrderForm({
   const { orderReasons } = useOrderReasons(orderReasonUuids);
 
   const handleFormSubmission = useCallback(
-    (data: ProcedureOrderBasketItem) => {
+    async (data: ProcedureOrderBasketItem) => {
       data.action = 'NEW';
       data.careSetting = careSettingUuid;
       data.orderer = session.currentProvider.uuid;
@@ -161,7 +161,7 @@ export function ProceduresOrderForm({
       setOrders(newOrders);
       closeWorkspace({ discardUnsavedChanges: true });
     },
-    [orders, setOrders, closeWorkspace, session.currentProvider.uuid, defaultValues],
+    [session.currentProvider.uuid, orders, setOrders, closeWorkspace, defaultValues.testType.conceptUuid],
   );
 
   const cancelOrder = useCallback(() => {
@@ -472,6 +472,7 @@ export function ProceduresOrderForm({
               </InputWrapper>
             </Column>
           </Grid>
+          <ExtensionSlot name="procedure-order-form-extras-slot" state={{ patient, visitContext }} />
         </div>
         <div>
           {showErrorNotification && (

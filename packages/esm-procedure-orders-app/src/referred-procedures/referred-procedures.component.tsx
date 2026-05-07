@@ -5,9 +5,10 @@ import { DataTableSkeleton } from '@carbon/react';
 import { useTranslation } from 'react-i18next';
 interface WorklistProps {
   fulfillerStatus: string;
+  filterByPatient?: (patientUuid: string) => boolean;
 }
 
-const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
+const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus, filterByPatient }) => {
   const { t } = useTranslation();
   const { workListEntries, isLoading } = useOrdersWorklist('', fulfillerStatus);
 
@@ -27,6 +28,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
             showStartButton={false}
             title={t('referredProcedures', 'Referred Procedures')}
             actions={[{ actionName: 'postProcedureResultForm' }, { actionName: 'reject-procedure-order-dialog' }]}
+            filterByPatient={filterByPatient}
           />
         </div>
       </>

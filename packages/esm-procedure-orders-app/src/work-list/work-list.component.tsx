@@ -7,7 +7,10 @@ import GroupedOrdersTable from '../shared/ui/common/grouped-orders-table.compone
 import { DataTableSkeleton } from '@carbon/react';
 import { type WorklistProps } from '../types';
 
-const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
+const WorkList: React.FC<WorklistProps & { filterByPatient?: (patientUuid: string) => boolean }> = ({
+  fulfillerStatus,
+  filterByPatient,
+}) => {
   const { t } = useTranslation();
 
   const { workListEntries, isLoading } = useOrdersWorklist('', fulfillerStatus);
@@ -28,6 +31,7 @@ const WorkList: React.FC<WorklistProps> = ({ fulfillerStatus }) => {
           showStartButton={false}
           title={t('workList', 'Work List')}
           actions={[{ actionName: 'postProcedureResultForm' }, { actionName: 'reject-procedure-order-dialog' }]}
+          filterByPatient={filterByPatient}
         />
       </div>
     </>
