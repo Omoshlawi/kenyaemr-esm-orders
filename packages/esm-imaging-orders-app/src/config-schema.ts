@@ -32,6 +32,30 @@ export const configSchema = {
       _default: [],
     },
   },
+  radiologyOrdersRequiringRenalFunctionCheck: {
+    _type: Type.Array,
+    _description:
+      'Radiology procedures that require recent renal function lab results before ordering. For each configured procedure, the system checks whether a valid lab result exists within the specified time window and warns the clinician if none is found.',
+    _elements: {
+      procedureConceptUuid: {
+        _type: Type.ConceptUuid,
+        _description:
+          'UUID of the radiology procedure concept that triggers the renal function check (e.g. contrast-enhanced CT scan).',
+      },
+      labResultValidityPeriodInDays: {
+        _type: Type.Number,
+        _description:
+          'Number of days a renal function lab result remains valid. Results older than this will trigger a warning to the clinician.',
+      },
+    },
+    _default: [],
+  },
+  renalFunctionTestConceptUuid: {
+    _type: Type.ConceptUuid,
+    _description:
+      'UUID of the lab test (or test panel) used to assess renal function. Results for this concept are checked against the validity period configured for each radiology procedure in radiologyOrdersRequiringRenalFunctionCheck.',
+    _default: '161488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+  },
 };
 
 interface OrderReason {
@@ -48,4 +72,9 @@ export type ImagingConfig = {
   };
   labTestsWithOrderReasons: Array<OrderReason>;
   radiologyConceptClassUuid: string;
+  radiologyOrdersRequiringRenalFunctionCheck: Array<{
+    procedureConceptUuid: string;
+    labResultValidityPeriodInDays: number;
+  }>;
+  renalFunctionTestConceptUuid: string;
 };

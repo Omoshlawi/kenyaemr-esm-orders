@@ -1,24 +1,10 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Add } from '@carbon/react/icons';
-import {
-  PageHeader,
-  PageHeaderContent,
-  launchWorkspace,
-  ExtensionSlot,
-  useLayoutType,
-  XrayPictogram,
-} from '@openmrs/esm-framework';
-import { Button } from '@carbon/react';
+import { PageHeader, PageHeaderContent, ExtensionSlot, XrayPictogram } from '@openmrs/esm-framework';
 import styles from './imagining-header.scss';
 
 export const ImagingPageHeader: React.FC = () => {
   const { t } = useTranslation();
-  const responseSize = useLayoutType() === 'tablet' ? 'sm' : 'md';
-
-  const launchAddImagingOrderWorkspace = useCallback(() => {
-    launchWorkspace('search-patient-workspace');
-  }, []);
 
   return (
     <div className={styles.pageHeader}>
@@ -26,9 +12,6 @@ export const ImagingPageHeader: React.FC = () => {
         <PageHeaderContent illustration={<XrayPictogram />} title={t('radiologyAndImaging', 'Radiology and Imaging')} />{' '}
         <div className={styles.pageHeaderActions}>
           <ExtensionSlot className={styles.providerBannerInfoSlot} name="provider-banner-info-slot" />
-          <Button className={styles.addImagingOrderButton} size={responseSize} renderIcon={Add} onClick={launchAddImagingOrderWorkspace}>
-            {t('addImagingOrder', 'Add Imaging Order')}
-          </Button>
         </div>
       </PageHeader>
     </div>

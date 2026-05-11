@@ -2,114 +2,207 @@
 @use '@carbon/layout';
 @use '@carbon/type';
 
+.orderDetailsContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: colors.$white-0;
+  border: 1px solid colors.$gray-20;
+  border-radius: 4px;
+  margin-bottom: layout.$spacing-05;
+  overflow: hidden;
+}
+
+.orderCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: layout.$spacing-04 layout.$spacing-05;
+  background-color: colors.$gray-10;
+  border-bottom: 1px solid colors.$gray-20;
+}
+
+.orderMeta {
+  display: flex;
+  flex-direction: column;
+  gap: layout.$spacing-02;
+}
+
+.orderNumber {
+  @include type.type-style('label-01');
+  font-weight: 600;
+  color: colors.$gray-100;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.orderDate {
+  @include type.type-style('helper-text-01');
+  color: colors.$gray-60;
+}
+
+.statusBadge {
+  display: flex;
+  align-items: center;
+  gap: layout.$spacing-03;
+}
+
+.statusLabel {
+  @include type.type-style('label-01');
+  color: colors.$gray-70;
+  font-weight: 500;
+}
+
+.orderCardBody {
+  padding: layout.$spacing-05;
+  display: flex;
+  flex-direction: column;
+  gap: layout.$spacing-05;
+}
+
+.metaRow {
+  display: flex;
+  gap: layout.$spacing-07;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: layout.$spacing-02;
+  flex: 1;
+  min-width: 160px;
+}
+
+.metaItemLabel {
+  @include type.type-style('label-01');
+  color: colors.$gray-60;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.metaItemValue {
+  display: flex;
+  flex-wrap: wrap;
+  gap: layout.$spacing-02;
+  align-items: center;
+}
+
+.divider {
+  height: 1px;
+  background-color: colors.$gray-20;
+  margin: 0;
+}
+
+.detailsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.detailsTableLabel {
+  @include type.type-style('label-01');
+  color: colors.$gray-60;
+  font-weight: 500;
+  padding: layout.$spacing-03 layout.$spacing-04 layout.$spacing-03 0;
+  width: 30%;
+  vertical-align: top;
+}
+
+.detailsTableValue {
+  @include type.type-style('body-short-01');
+  color: colors.$gray-100;
+  font-weight: 500;
+  padding: layout.$spacing-03 0;
+  vertical-align: top;
+}
+
+.accordionTitle {
+  @include type.type-style('body-short-01');
+  font-weight: 600;
+  color: colors.$blue-60;
+}
+
+.textAreaInput {
+  width: 100%;
+  margin-bottom: layout.$spacing-04;
+}
+
+.reportActions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: layout.$spacing-03;
+}
+
+.printBtn {
+  --cds-layout-size-height-context: var(--cds-layout-size-height-sm, 2rem);
+  --cds-layout-size-height: var(--cds-layout-size-height-context);
+}
+
+.ordererRow {
+  display: flex;
+  align-items: center;
+  gap: layout.$spacing-02;
+  padding: layout.$spacing-03 layout.$spacing-05;
+  background-color: colors.$gray-10;
+  border-top: 1px solid colors.$gray-20;
+}
+
+.ordererLabel {
+  @include type.type-style('label-01');
+  color: colors.$gray-60;
+  font-weight: 500;
+}
+
+.ordererName {
+  @include type.type-style('body-short-01');
+  color: colors.$gray-100;
+  font-weight: 500;
+}
+
 .buttonSection {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  flex-direction: row;
-  padding-top: layout.$spacing-03;
-  width: 100%;
+  padding: layout.$spacing-04 layout.$spacing-05;
+  border-top: 1px solid colors.$gray-20;
+  gap: layout.$spacing-03;
 }
+
 .actionBtns {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  text-align: center;
-  flex-direction: row;
-  padding-top: layout.$spacing-03;
+  gap: layout.$spacing-03;
   width: 100%;
 }
 
-.nameOrder {
-  margin-top: layout.$spacing-03;
-  font-size: type.type-scale(2);
-  margin-left: layout.$spacing-04;
-}
-
-.testOrder {
-  font-size: type.type-scale(2);
-  font-weight: bold;
-}
-
-.actionButtons {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+.renalContainer {
+  display: grid;
+  align-items: flex-end;
   width: 100%;
+  padding: layout.$spacing-03 layout.$spacing-05;
+
+  & > button {
+    max-height: 2rem;
+    margin-bottom: layout.$spacing-01;
+  }
 }
 
-.orderDetailsContainer {
-  width: 80%;
-  display: flex;
-  flex-direction: column;
-  padding: layout.$spacing-05;
-  margin-left: layout.$spacing-13;
-  background-color: colors.$white-0;
-  margin: layout.$spacing-05 0;
+.appointmentContainer {
+  padding: layout.$spacing-03 layout.$spacing-05;
+  border-bottom: 1px solid colors.$gray-20;
 }
 
-.orderUrgency {
-  display: flex;
-  justify-content: flex-end;
-  font-size: type.type-scale(2);
-  margin-bottom: layout.$spacing-03;
-}
-.printBtn {
-  --cds-layout-size-height-context: var(--cds-layout-size-height-sm, 2rem);
-  --cds-layout-size-height: var(--cds-layout-size-height-context);
+.appointmentSection {
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: justify;
-  padding: 0 layout.$spacing-04;
-  gap: layout.$spacing-05;
-  margin-right: layout.$spacing-05;
-}
-.orderHeader {
-  display: flex;
   justify-content: space-between;
-  width: 100%;
-  padding: 0;
-  margin-bottom: layout.$spacing-03;
 }
 
-.orderNumber {
-  font-size: type.type-scale(2);
-}
-
-.orderStatus {
-  font-size: type.type-scale(2);
-}
-
-.orderDate {
-  text-align: right;
-  font-size: type.type-scale(2);
-}
-
-.instructions {
-  text-align: justify;
-  font-size: type.type-scale(1);
-}
-
-.urgencyStatus {
-  font-size: type.type-scale(2);
-  margin-top: layout.$spacing-03;
-}
-
-.instructionLabel {
-  font-weight: bold;
-  font-size: type.type-scale(2);
-}
-.orderName {
-  font-weight: bold;
-  font-size: type.type-scale(2);
-}
-
-.labResultSlot {
-  text-align: center;
-  margin-bottom: layout.$spacing-03;
-}
-
-.accordionTitle {
-  font-weight: bold;
+.appointmentSectionTitle {
+  @include type.type-style('label-01');
+  font-weight: 600;
+  color: colors.$gray-70;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }

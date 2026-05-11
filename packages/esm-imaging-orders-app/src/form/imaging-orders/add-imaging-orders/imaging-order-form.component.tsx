@@ -32,10 +32,10 @@ import styles from './imaging-order-form.scss';
 import type { ImagingOrderBasketItem } from '../../../types';
 
 export interface ImagingOrderFormProps {
-  initialOrder: ImagingOrderBasketItem;
-  closeWorkspace: Workspace2DefinitionProps['closeWorkspace'];
-  patient: fhir.Patient;
-  setHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
+  readonly initialOrder: ImagingOrderBasketItem;
+  readonly closeWorkspace: Workspace2DefinitionProps['closeWorkspace'];
+  readonly patient: fhir.Patient;
+  readonly setHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
 }
 
 // Designs:
@@ -54,7 +54,7 @@ export function ImagingOrderForm({
   const { testTypes, isLoading: isLoadingTestTypes, error: errorLoadingTestTypes } = useImagingTypes();
   const [showErrorNotification, setShowErrorNotification] = useState(false);
 
-  const lateralityItems = [
+  const lateralityItems: Array<{ value: string; label: string }> = [
     { value: 'LEFT', label: t('LEFT', 'Left') },
     { value: 'RIGHT', label: t('RIGHT', 'Right') },
     { value: 'BILATERAL', label: t('BILATERAL', 'Bilateral') },
@@ -102,9 +102,9 @@ export function ImagingOrderForm({
     (data: ImagingOrderBasketItem) => {
       data.action = 'NEW';
       data.careSetting = careSettingUuid;
-      data.orderer = session.currentProvider.uuid;
+      data.orderer = session?.currentProvider?.uuid;
       const newOrders = [...orders];
-      const existingOrder = orders.find((order) => order.testType?.conceptUuid == defaultValues.testType?.conceptUuid);
+      const existingOrder = orders.find((order) => order.testType?.conceptUuid == defaultValues?.testType?.conceptUuid);
       const orderIndex = existingOrder ? orders.indexOf(existingOrder) : orders.length;
       newOrders[orderIndex] = data;
       setOrders(newOrders);
@@ -114,7 +114,7 @@ export function ImagingOrderForm({
   );
 
   const cancelOrder = useCallback(() => {
-    setOrders(orders.filter((order) => order.testType?.conceptUuid !== defaultValues.testType?.conceptUuid));
+    setOrders(orders.filter((order) => order.testType?.conceptUuid !== defaultValues?.testType?.conceptUuid));
     closeWorkspace();
   }, [closeWorkspace, orders, setOrders, defaultValues]);
 
@@ -130,6 +130,20 @@ export function ImagingOrderForm({
 
   const [showScheduleDate, setShowScheduleDate] = useState(false);
 
+  if (!session?.currentProvider?.uuid) {
+    return (
+      <InlineNotification
+        kind="info"
+        lowContrast
+        title={t('providerAccountRequired', 'Provider account required')}
+        subtitle={t(
+          'currentUserIsNotProviderSubTitle',
+          'You are not registered as a provider. Contact your system administrator to get provider access before placing imaging orders.',
+        )}
+      />
+    );
+  }
+
   return (
     <>
       {errorLoadingTestTypes && (
@@ -143,7 +157,7 @@ export function ImagingOrderForm({
       )}
       <Form className={styles.orderForm} onSubmit={handleSubmit(handleFormSubmission, onError)}>
         <div className={styles.form}>
-          <ExtensionSlot name="top-of-imaging-order-form-slot" state={{ order: initialOrder }} />
+          <ExtensionSlot name="top-of-imaging-order-form-slot" state={{ order: initialOrder, patient }} />
 
           <Grid className={styles.gridRow}>
             <Column lg={16} md={8} sm={4}>
@@ -243,7 +257,7 @@ export function ImagingOrderForm({
                       onChange={({ selectedItem }) => onChange(selectedItem?.value || '')}
                       invalid={!!errors.laterality?.message}
                       invalidText={errors.laterality?.message}
-                      itemToString={(item) => item?.label}
+                      itemToString={(item) => item?.label ?? ''}
                     />
                   )}
                 />
@@ -349,7 +363,7 @@ export function ImagingOrderForm({
   );
 }
 
-function InputWrapper({ children }) {
+function InputWrapper({ children }: { readonly children: React.ReactNode }) {
   const isTablet = useLayoutType() === 'tablet';
   return (
     <Layer level={isTablet ? 1 : 0}>

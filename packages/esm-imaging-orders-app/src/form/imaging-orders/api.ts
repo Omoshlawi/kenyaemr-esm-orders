@@ -4,7 +4,6 @@ import type { OrderPost } from '@openmrs/esm-patient-common-lib';
 import useSWRImmutable from 'swr/immutable';
 import { type ImagingOrderBasketItem } from '../../types';
 
-// TODO: This should be dynamic through configs
 export const careSettingUuid = '6f0c9a92-6f24-11e3-af88-005056821db0';
 
 export function useOrderReasons(conceptUuids: Array<string>) {
@@ -41,75 +40,48 @@ export interface ImagingOrderPost extends OrderPost {
   bodySite?: string;
 }
 
+function resolveScheduledDate(order: ImagingOrderBasketItem): string | undefined {
+  if (order.urgency !== 'ON_SCHEDULED_DATE') return undefined;
+  return order.scheduleDate instanceof Date ? order.scheduleDate.toISOString() : order.scheduleDate;
+}
+
 export function prepImagingOrderPostData(
   order: ImagingOrderBasketItem,
   patientUuid: string,
-  encounterUuid: string,
+  encounterUuid: string | null,
+  _orderingProviderUuid: string,
 ): ImagingOrderPost {
-  let payload = {};
+  const basePayload = {
+    type: 'procedureorder' as const,
+    patient: patientUuid,
+    careSetting: order.careSetting,
+    orderer: order.orderer,
+    encounter: encounterUuid ?? undefined,
+    concept: order.testType?.conceptUuid,
+    orderReason: order.orderReason,
+    orderReasonNonCoded: order.orderReasonNonCoded,
+    commentToFulfiller: order.commentsToFulfiller,
+    laterality: order.laterality,
+    bodySite: order.bodySite,
+    scheduledDate: resolveScheduledDate(order),
+  };
+
   if (order.action === 'NEW' || order.action === 'RENEW') {
-    payload = {
+    return {
+      ...basePayload,
       action: 'NEW',
-      type: 'procedureorder',
-      patient: patientUuid,
       careSetting: careSettingUuid,
-      orderer: order.orderer,
-      encounter: encounterUuid,
-      concept: order.testType.conceptUuid,
       instructions: order.instructions,
-      orderReason: order.orderReason,
-      orderReasonNonCoded: order.orderReasonNonCoded,
-      commentToFulfiller: order.commentsToFulfiller,
-      laterality: order.laterality,
-      bodySite: order.bodySite,
       urgency: order.urgency,
     };
-    if (order.urgency === 'ON_SCHEDULED_DATE') {
-      payload['scheduledDate'] = order.scheduleDate instanceof Date ? order.scheduleDate.toISOString() : order.scheduleDate;
-    }
-    return payload;
-  } else if (order.action === 'REVISE') {
-    payload = {
-      action: 'REVISE',
-      type: 'procedureorder',
-      patient: patientUuid,
-      careSetting: order.careSetting,
-      orderer: order.orderer,
-      encounter: encounterUuid,
-      concept: order.testType.conceptUuid,
-      instructions: order.instructions,
-      orderReason: order.orderReason,
-      orderReasonNonCoded: order.orderReasonNonCoded,
-      commentToFulfiller: order.commentsToFulfiller,
-      laterality: order.laterality,
-      bodySite: order.bodySite,
-    };
-    if (order.urgency === 'ON_SCHEDULED_DATE') {
-      payload['scheduledDate'] = order.scheduleDate instanceof Date ? order.scheduleDate.toISOString() : order.scheduleDate;
-    }
-    return payload;
-  } else if (order.action === 'DISCONTINUE') {
-    payload = {
-      action: 'DISCONTINUE',
-      type: 'procedureorder',
-      patient: patientUuid,
-      careSetting: order.careSetting,
-      orderer: order.orderer,
-      encounter: encounterUuid,
-      concept: order.testType.conceptUuid,
-      orderReason: order.orderReason,
-      orderReasonNonCoded: order.orderReasonNonCoded,
-      commentToFulfiller: order.commentsToFulfiller,
-      laterality: order.laterality,
-      bodySite: order.bodySite,
-    };
-    if (order.urgency === 'ON_SCHEDULED_DATE') {
-      payload['scheduledDate'] = order.scheduleDate instanceof Date ? order.scheduleDate.toISOString() : order.scheduleDate;
-    }
-    return payload;
-  } else {
-    throw new Error(`Unknown order action: ${order.action}.`);
   }
+  if (order.action === 'REVISE') {
+    return { ...basePayload, action: 'REVISE', instructions: order.instructions };
+  }
+  if (order.action === 'DISCONTINUE') {
+    return { ...basePayload, action: 'DISCONTINUE' };
+  }
+  throw new Error(`Unknown order action: ${order.action}.`);
 }
 const chunkSize = 10;
 export function getConceptReferenceUrls(conceptUuids: Array<string>) {

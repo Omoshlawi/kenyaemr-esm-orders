@@ -8,7 +8,7 @@
     {
       "component": "imagingOrdersLink",
       "name": "radiology-dashboard-link",
-      "slot":"homepage-dashboard-slot",
+      "slot": "homepage-dashboard-slot",
       "meta": {
         "name": "imaging-orders",
         "title": "imaging-orders",
@@ -21,7 +21,7 @@
       "slot": "imaging-dashboard-slot"
     },
     {
-     "component": "radiologyDashboard",
+      "component": "radiologyDashboard",
       "name": "radiology-dashboard-slot-name",
       "slot": "express-radiology-dashboard-slot"
     },
@@ -35,6 +35,12 @@
       "name": "imaging-results-component",
       "component": "imagingResultsComponent",
       "slot": "ewf-radiology-and-imaging-results-slot"
+    },
+    {
+      "name": "renal-warning-component",
+      "component": "renalWarningComponent",
+      "slot": "top-of-imaging-order-form-slot",
+      "order": 3
     }
   ],
   "workspaces": [
@@ -83,22 +89,33 @@
       "component": "printReportModal"
     }
   ],
-  "workspaceGroups": [
-    {
-      "name": "add-imaging-order-workspace-group",
-      "members": [
-        "add-drug-order",
-        "order-basket",
-        "add-lab-order",
-        "add-imaging-order"
-      ]
-    }
-  ],
-  "workspaces2":[
+  "workspaces2": [
     {
       "name": "add-imaging-order",
       "component": "addImagingOrderWorkspace",
       "window": "patient-chart-order-basket"
+    },
+    {
+      "name": "imaging-renal-add-lab-order-workspace",
+      "component": "@openmrs/esm-patient-tests-app#exportedAddLabOrderWorkspace",
+      "window": "imaging-renal-lab-order-window"
+    },
+    {
+      "name": "imaging-renal-order-basket-workspace",
+      "component": "@palladium-ethiopia/esm-patient-orders-app#exportedOrderBasketWorkspace",
+      "window": "imaging-renal-lab-order-window"
+    }
+  ],
+  "workspaceWindows2": [
+    {
+      "name": "imaging-renal-lab-order-window",
+      "group": "imaging-renal-lab-order-group"
+    }
+  ],
+  "workspaceGroups2": [
+    {
+      "name": "imaging-renal-lab-order-group",
+      "scope": "/home/imaging-orders"
     }
   ]
 }

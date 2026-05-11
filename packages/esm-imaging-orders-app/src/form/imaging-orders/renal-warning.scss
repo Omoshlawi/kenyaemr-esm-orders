@@ -1,0 +1,66 @@
+@use '@carbon/layout';
+@use '@carbon/colors';
+@use '@carbon/type';
+@use '@openmrs/esm-styleguide/src/vars' as *;
+
+.container {
+  background-color: colors.$white-0;
+  border-bottom: 1px solid colors.$gray-20;
+}
+
+.renalFunctionTestNotification {
+  margin-bottom: layout.$spacing-02;
+}
+
+.sectionTitle {
+  @include type.type-style('label-01');
+  font-weight: 600;
+  color: colors.$gray-80;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: layout.$spacing-03;
+}
+
+.noResults {
+  @include type.type-style('body-compact-01');
+  color: $text-02;
+  padding: layout.$spacing-03 0;
+}
+
+.list {
+  width: 100%;
+  margin: 0;
+  outline: 1px solid colors.$gray-10;
+  margin-bottom: layout.$spacing-03;
+
+  :global(.cds--structured-list-th),
+  :global(.cds--structured-list-td) {
+    @include type.type-style('label-01');
+    padding: layout.$spacing-02 layout.$spacing-03;
+  }
+
+  :global(.cds--structured-list-th) {
+    color: $text-02;
+  }
+}
+
+// Interpretation cell color coding
+.high,
+.low {
+  background-color: colors.$orange-10 !important;
+}
+
+.high span::after {
+  content: ' ↑↑↑';
+}
+
+.low span::after {
+  content: ' ↓↓↓';
+}
+
+.high span,
+.low span {
+  @include type.type-style('label-01');
+  font-weight: 600;
+  color: $ui-05;
+}

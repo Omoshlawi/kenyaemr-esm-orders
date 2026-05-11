@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Button, Tile } from '@carbon/react';
 import { Add, ChevronDown, ChevronUp } from '@carbon/react/icons';
-import { useLayoutType, closeWorkspace, launchWorkspace, launchWorkspace2 } from '@openmrs/esm-framework';
+import { useLayoutType, launchWorkspace2 } from '@openmrs/esm-framework';
 import { type OrderBasketItem, useOrderBasket } from '@openmrs/esm-patient-common-lib';
 import { ImagingOrderBasketItemTile } from './imaging-order-basket-item-tile.component';
 import { prepImagingOrderPostData } from '../api';

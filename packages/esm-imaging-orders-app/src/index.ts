@@ -70,3 +70,9 @@ export const imagingResultsComponent = getAsyncLifecycle(
   () => import('./imaging-results/imaging-results.component'),
   options,
 );
+
+export const renalWarningComponent = getAsyncLifecycle(
+  () => import('./form/imaging-orders/renal-warning.component'),
+  options,
+);
+

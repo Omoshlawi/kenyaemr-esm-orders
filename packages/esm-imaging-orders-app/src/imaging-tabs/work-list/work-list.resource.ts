@@ -96,6 +96,7 @@ export interface PreviousOrder {
 export interface Encounter {
   uuid: string;
   display: string;
+  location: { uuid: string; display: string };
   links: Link[];
 }
 
