@@ -56,6 +56,26 @@ export const configSchema = {
       'UUID of the lab test (or test panel) used to assess renal function. Results for this concept are checked against the validity period configured for each radiology procedure in radiologyOrdersRequiringRenalFunctionCheck.',
     _default: '161488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
   },
+  useDicom: {
+    _type: Type.String,
+    _description: 'Whether we want to enable showing dicom images',
+    _default: false,
+  },
+  orthancServerUrl: {
+    _type: Type.String,
+    _description: 'Base URL of the Orthanc DICOM server (e.g. http://localhost:8042)',
+    _default: 'http://localhost:8042',
+  },
+  orthancUsername: {
+    _type: Type.String,
+    _description: 'Username for Orthanc Basic Auth',
+    _default: '',
+  },
+  orthancPassword: {
+    _type: Type.String,
+    _description: 'Password for Orthanc Basic Auth',
+    _default: '',
+  },
 };
 
 interface OrderReason {
@@ -77,4 +97,8 @@ export type ImagingConfig = {
     labResultValidityPeriodInDays: number;
   }>;
   renalFunctionTestConceptUuid: string;
+  orthancServerUrl: string;
+  orthancUsername: string;
+  orthancPassword: string;
+  useDicom: boolean;
 };

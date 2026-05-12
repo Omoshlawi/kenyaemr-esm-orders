@@ -2,7 +2,7 @@
 @use '@carbon/colors';
 
 .container {
-  :global(.cds--data-table) {
+  & > :global(.cds--data-table) {
     margin-top: layout.$layout-04;
   }
 

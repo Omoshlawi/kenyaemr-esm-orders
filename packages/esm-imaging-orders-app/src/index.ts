@@ -76,3 +76,4 @@ export const renalWarningComponent = getAsyncLifecycle(
   options,
 );
 
+export const dicomImageView = getAsyncLifecycle(() => import('./imaging-results/dicom-images.component'), options);

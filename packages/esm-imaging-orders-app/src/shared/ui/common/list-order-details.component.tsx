@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ExtensionSlot, formatDate, launchWorkspace2, parseDate, showModal } from '@openmrs/esm-framework';
+import { ExtensionSlot, formatDate, launchWorkspace2, parseDate, showModal, useConfig } from '@openmrs/esm-framework';
 import { type ListOrdersDetailsProps } from './grouped-imaging-types';
 import { Accordion, AccordionItem, Button, InlineLoading, Tag, TextArea } from '@carbon/react';
 import { Calendar, Printer } from '@carbon/react/icons';
@@ -9,6 +9,8 @@ import ActionButton from './action-button/action-button.component';
 import { RenalWarningForOrder } from '../../../form/imaging-orders/renal-warning.component';
 import styles from './list-order-details.scss';
 import usePatientDiagnosis from './list-order-details.resource';
+import DicomImages from '../../../imaging-results/dicom-images.component';
+import { type ImagingConfig } from '../../../config-schema';
 
 type OrderUrgency = 'ROUTINE' | 'STAT' | 'ON_SCHEDULED_DATE';
 
@@ -28,6 +30,7 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders, sho
   const orders = groupedOrders?.orders || [];
   const patientUuid = orders[0]?.patient?.uuid;
   const { diagnoses, isLoading } = usePatientDiagnosis(patientUuid);
+  const { useDicom } = useConfig<ImagingConfig>();
 
   if (isLoading) {
     return <InlineLoading status="active" description={t('loading', 'Loading...')} />;
@@ -122,30 +125,34 @@ const ListOrderDetails: React.FC<ListOrdersDetailsProps> = ({ groupedOrders, sho
 
             <div className={styles.divider} />
 
-            <table className={styles.detailsTable}>
-              <tbody>
-                <tr>
-                  <td className={styles.detailsTableLabel}>{t('testOrdered', 'Test ordered')}</td>
-                  <td className={styles.detailsTableValue}>{capitalize(row.display || '--')}</td>
-                </tr>
-                <tr>
-                  <td className={styles.detailsTableLabel}>{t('orderInStruction', 'Instructions')}</td>
-                  <td className={styles.detailsTableValue}>
-                    {row.instructions ? (
-                      capitalize(row.instructions)
-                    ) : (
-                      <Tag size="md" type="warm-gray">
-                        {t('NoInstructionLeft', 'No instructions are provided.')}
-                      </Tag>
-                    )}
-                  </td>
-                </tr>
-                <tr>
-                  <td className={styles.detailsTableLabel}>{t('orderReason', 'Order reason')}</td>
-                  <td className={styles.detailsTableValue}>{capitalize(row.orderReasonNonCoded || '--')}</td>
-                </tr>
-              </tbody>
-            </table>
+            <div>
+              <table className={styles.detailsTable}>
+                <tbody>
+                  <tr>
+                    <td className={styles.detailsTableLabel}>{t('testOrdered', 'Test ordered')}</td>
+                    <td className={styles.detailsTableValue}>{capitalize(row.display || '--')}</td>
+                  </tr>
+                  <tr>
+                    <td className={styles.detailsTableLabel}>{t('orderInStruction', 'Instructions')}</td>
+                    <td className={styles.detailsTableValue}>
+                      {row.instructions ? (
+                        capitalize(row.instructions)
+                      ) : (
+                        <Tag size="md" type="warm-gray">
+                          {t('NoInstructionLeft', 'No instructions are provided.')}
+                        </Tag>
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className={styles.detailsTableLabel}>{t('orderReason', 'Order reason')}</td>
+                    <td className={styles.detailsTableValue}>{capitalize(row.orderReasonNonCoded || '--')}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {useDicom && <div>{row.fulfillerStatus !== null && <DicomImages accessionNumber={row.orderNumber} />}</div>}
 
             {row.procedures?.[0]?.procedureReport && (
               <Accordion>

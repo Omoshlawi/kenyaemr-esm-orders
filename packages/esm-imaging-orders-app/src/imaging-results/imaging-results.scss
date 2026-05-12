@@ -7,6 +7,19 @@
   border: 1px solid colors.$gray-20;
 }
 
+.dicomSection {
+  border: 1px solid colors.$gray-20;
+  padding: layout.$spacing-05;
+  margin-top: layout.$spacing-05;
+  background-color: colors.$gray-10;
+}
+
+.dicomSectionTitle {
+  @include type.type-style('heading-02');
+  color: colors.$gray-100;
+  margin-bottom: layout.$spacing-04;
+}
+
 .procedure {
   p {
     white-space: pre-wrap;

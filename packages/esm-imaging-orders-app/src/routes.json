@@ -41,6 +41,10 @@
       "component": "renalWarningComponent",
       "slot": "top-of-imaging-order-form-slot",
       "order": 3
+    },
+    {
+      "name":"dicom-image-viewer",
+      "component":"dicomImageView"
     }
   ],
   "workspaces": [
