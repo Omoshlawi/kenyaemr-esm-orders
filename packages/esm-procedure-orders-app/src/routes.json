@@ -132,6 +132,11 @@
       "name": "procedure-results-component",
       "component": "procedureResultsComponent",
       "slot": "ewf-procedures-results-slot"
+    },
+    {
+      "name": "procedure-ordered-tabs",
+      "component": "procedureOrderedTabs",
+      "slot": "procedure-ordered-tabs-extension"
     }
   ],
   "workspaces": [
