@@ -102,7 +102,7 @@
     },
     {
       "name": "imaging-renal-order-basket-workspace",
-      "component": "@palladium-ethiopia/esm-patient-orders-app#exportedOrderBasketWorkspace",
+      "component": "@openmrs/esm-patient-orders-app#exportedOrderBasketWorkspace",
       "window": "imaging-renal-lab-order-window"
     }
   ],
