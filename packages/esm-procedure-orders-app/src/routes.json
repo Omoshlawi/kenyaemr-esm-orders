@@ -133,12 +133,6 @@
       "component": "procedureResultsComponent",
       "slot": "ewf-procedures-results-slot"
     }
-    ,
-    {
-      "name": "procedure-ordered-tabs",
-      "component": "procedureOrderedTabs",
-      "slot": "procedure-orders-dashboard-slot"
-    }
   ],
   "workspaces": [
     {
@@ -167,7 +161,7 @@
       "route": "procedure"
     }
   ],
-  "workspaces2":[
+  "workspaces2": [
     {
       "name": "add-procedures-order",
       "component": "addProceduresOrderWorkspace",
