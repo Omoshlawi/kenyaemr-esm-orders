@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatDate, parseDate, useLayoutType } from '@openmrs/esm-framework';
+import { formatDate, parseDate, useConfig, useLayoutType } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
 import {
   DataTable,
@@ -23,6 +23,8 @@ import { CardHeader, EmptyState } from '@openmrs/esm-patient-common-lib';
 import { usePatientImagingResults } from './imaging-resource';
 
 import styles from './imaging-results.scss';
+import { type ImagingConfig } from '../config-schema';
+import DicomImages from './dicom-images.component';
 type ImagingResultsComponentProps = {
   patientUuid: string;
 };
@@ -30,6 +32,7 @@ type ImagingResultsComponentProps = {
 const ImagingResultsComponent: React.FC<ImagingResultsComponentProps> = ({ patientUuid }) => {
   const { t } = useTranslation();
   const responseSize = useLayoutType() === 'tablet' ? 'md' : 'sm';
+  const { useDicom } = useConfig<ImagingConfig>();
   const { orders, isLoading } = usePatientImagingResults(patientUuid);
   const handleRefresh = () => {
     mutate((key) => typeof key === 'string' && key.includes('/order?'), undefined, {
@@ -108,6 +111,9 @@ const ImagingResultsComponent: React.FC<ImagingResultsComponentProps> = ({ patie
                     </TableExpandRow>
                     <TableExpandedRow colSpan={headers.length + 1} {...getExpandedRowProps({ row })}>
                       <div className={styles.expandedRow}>
+                        {useDicom && orders[index]?.orderNumber && (
+                          <DicomImages accessionNumber={orders[index].orderNumber} />
+                        )}
                         {orders[index].procedures.map((procedure) => (
                           <div className={styles.procedure} key={procedure.uuid}>
                             <h4>{t('findings', 'Findings')}</h4>
