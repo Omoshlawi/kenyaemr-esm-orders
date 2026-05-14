@@ -1,6 +1,5 @@
-import { useConfig } from '@openmrs/esm-framework';
+import { openmrsFetch, restBaseUrl } from '@openmrs/esm-framework';
 import useSWR from 'swr';
-import { type ImagingConfig } from '../config-schema';
 
 export interface DicomStudyMainTags {
   AccessionNumber: string;
@@ -21,55 +20,26 @@ export interface DicomPatientMainTags {
 }
 
 export interface DicomStudy {
-  ID: string;
-  IsStable: boolean;
-  Labels: Array<string>;
-  LastUpdate: string;
-  MainDicomTags: DicomStudyMainTags;
-  ParentPatient: string;
-  PatientMainDicomTags: DicomPatientMainTags;
-  Series: Array<string>;
-  Type: string;
+  uuid: string;
+  stable: boolean;
+  lastUpdate: string;
+  mainDicomTags: DicomStudyMainTags;
+  patientMainDicomTags: DicomPatientMainTags;
 }
 
-async function fetchDicomStudies(
-  orthancServerUrl: string,
-  authHeader: string,
-  accessionNumber: string,
-): Promise<Array<DicomStudy>> {
-  const response = await fetch(`${orthancServerUrl}/tools/find`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Basic ${authHeader}`,
-    },
-    body: JSON.stringify({
-      Level: 'Study',
-      Query: { AccessionNumber: accessionNumber },
-      Expand: true,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Orthanc request failed: ${response.status} ${response.statusText}`);
-  }
-
-  return response.json();
+interface DicomStudyResponse {
+  results: Array<DicomStudy>;
 }
 
 export function useDicomImages(accessionNumber: string) {
-  const { orthancServerUrl, orthancUsername, orthancPassword } = useConfig<ImagingConfig>();
+  const url = accessionNumber ? `${restBaseUrl}/dicomstudy?accessionNumber=${accessionNumber}` : null;
 
-  // TODO: use single-sign on or proxy this through openmrs-module-orderexpansion module
-  const authHeader = btoa(`${orthancUsername}:${orthancPassword}`);
-
-  const { data, error, isLoading } = useSWR<DicomStudy[]>(
-    accessionNumber ? [orthancServerUrl, accessionNumber] : null,
-    ([url, accNo]: [string, string]) => fetchDicomStudies(url, authHeader, accNo),
+  const { data, error, isLoading } = useSWR<DicomStudyResponse>(url, (path: string) =>
+    openmrsFetch<DicomStudyResponse>(path).then((res) => res.data),
   );
 
   return {
-    studies: data ?? [],
+    studies: data?.results ?? [],
     isLoading,
     error,
   };
