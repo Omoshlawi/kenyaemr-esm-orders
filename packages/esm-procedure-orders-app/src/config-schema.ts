@@ -54,6 +54,16 @@ export const configSchema = {
     _description: 'The procedure concept class UUID',
     _default: '8d490bf4-c2cc-11de-8d13-0010c6dffd0f',
   },
+  procedureMinorCategoryConceptUuid: {
+    _type: Type.String,
+    _description: 'The procedure minor category concept UUID',
+    _default: '3c3946b1-d71d-41b3-a2e4-2d755006200a',
+  },
+  procedureMajorCategoryConceptUuid: {
+    _type: Type.String,
+    _description: 'The procedure major category concept UUID',
+    _default: '3798940f-87b8-464e-b36a-17da246f034e',
+  },
 };
 
 export interface OrderReason {
@@ -78,6 +88,8 @@ export interface ConfigObject {
   procedureComplicationConceptUuid: string;
   procedureResultEncounterType: string;
   procedureResultEncounterRole: string;
+  procedureMinorCategoryConceptUuid: string;
+  procedureMajorCategoryConceptUuid: string;
 }
 
 export const StringPath =

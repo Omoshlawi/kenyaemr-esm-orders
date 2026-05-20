@@ -14,6 +14,7 @@ import {
   TableRow,
   Button,
   Pagination,
+  Row,
 } from '@carbon/react';
 import { ConfigurableLink, restBaseUrl, useLayoutType, usePagination } from '@openmrs/esm-framework';
 import { CardHeader, usePaginationInfo } from '@openmrs/esm-patient-common-lib';
@@ -30,6 +31,7 @@ import { useSearchGroupedResults } from '../../../hooks/useSearchGroupedResults'
 import { type GroupedOrdersTableProps } from './grouped-procedure-types';
 
 import styles from './grouped-orders-table.scss';
+import ExportStandardTheatreList from '../../../completed-list/export-standard.theatre-list.component';
 
 const GroupedOrdersTable: React.FC<
   GroupedOrdersTableProps & {
@@ -121,9 +123,14 @@ const GroupedOrdersTable: React.FC<
     <>
       <div className={styles.widgetCard}>
         <CardHeader title={props?.title}>
-          <Button size={responseSize} kind="ghost" renderIcon={Renew} onClick={handleRefresh}>
-            {t('refresh', 'Refresh')}
-          </Button>
+          <Row>
+            {props.title === t('completedOrders', 'Completed Orders') && (
+              <ExportStandardTheatreList patientOrders={groupedOrdersByPatient} />
+            )}
+            <Button size={responseSize} kind="ghost" renderIcon={Renew} onClick={handleRefresh}>
+              {t('refresh', 'Refresh')}
+            </Button>
+          </Row>
         </CardHeader>
       </div>
       <div className={styles.dataTableContainer}>

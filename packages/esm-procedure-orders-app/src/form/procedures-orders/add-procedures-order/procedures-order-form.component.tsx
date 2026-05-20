@@ -82,8 +82,8 @@ export function ProceduresOrderForm({
   } = useConceptById('162668AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
 
   const categoryItems = [
-    { value: '3c3946b1-d71d-41b3-a2e4-2d755006200a', label: t('minor', 'Minor') },
-    { value: '3798940f-87b8-464e-b36a-17da246f034e', label: t('major', 'Major') },
+    { value: config.procedureMinorCategoryConceptUuid, label: t('minor', 'Minor') },
+    { value: config.procedureMajorCategoryConceptUuid, label: t('major', 'Major') },
   ];
   const priorityOptions = [
     { value: 'STAT', label: t('STAT', 'Emergency') },
