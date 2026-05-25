@@ -1,11 +1,11 @@
-import { Button } from '@carbon/react';
+import { Button, InlineLoading } from '@carbon/react';
 import { Export } from '@carbon/react/icons';
-import { showSnackbar, useConfig, useLayoutType } from '@openmrs/esm-framework';
-import React, { type FC } from 'react';
+import { type Order, showSnackbar, useConfig, useLayoutType, type Encounter } from '@openmrs/esm-framework';
+import React, { useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type Result, type Order } from '../types';
-import { getPatientDiagnoses } from '../shared/ui/common/list-order-details.resource';
 import { type ConfigObject } from '../config-schema';
+import { type Result } from '../types';
+import { geIpdProcedureDetail, getPatientLabFindings } from './completed-list.resource';
 
 type ExportStandardTheatreListProps = {
   patientOrders?: Array<{ patientId: string; orders: Array<Result> }>;
@@ -13,7 +13,14 @@ type ExportStandardTheatreListProps = {
 
 const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patientOrders = [] }) => {
   const { t } = useTranslation();
-  const { procedureMajorCategoryConceptUuid, procedureMinorCategoryConceptUuid } = useConfig<ConfigObject>();
+  const [isExporting, setIsExporting] = useState(false);
+  const config = useConfig<ConfigObject>();
+  const {
+    procedureMajorCategoryConceptUuid,
+    procedureMinorCategoryConceptUuid,
+    testOrderTypeUuid,
+    theatreExportConcepts,
+  } = config;
   const responseSize = useLayoutType() === 'tablet' ? 'md' : 'sm';
   const headers = [
     { key: 'patientName', label: t('patientName', 'Patient Name') },
@@ -22,7 +29,7 @@ const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patient
     { key: 'patientAge', label: t('age', 'Age') },
     { key: 'diagnosis', label: t('diagnosis', 'Diagnosis') },
     { key: 'operation', label: t('operation', 'Operation') },
-    { key: 'labFindings', label: t('labFindings', 'Lab Findings') },
+    { key: 'labFindings', label: t('labFindingsExport', "Lab Findings: (HB;Platelets;K;CL;CR;LFT'S)") },
     { key: 'surgeon', label: t('surgeon', 'Surgeon & Ass.Surgeon') },
     { key: 'anesthetist', label: t('anesthetist', 'Anesthetist') },
     { key: 'operationType', label: t('operationType', 'A/B') },
@@ -31,6 +38,7 @@ const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patient
   ];
 
   const handleExport = async () => {
+    setIsExporting(true);
     try {
       const rows = await Promise.all(
         patientOrders.map(async ({ orders, patientId }) => {
@@ -43,27 +51,41 @@ const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patient
                 ? t('female', 'Female')
                 : '-';
           const patientAge = orders?.[0]?.patient?.person?.age || '-';
-          const diagnoses = await getPatientDiagnoses(patientId);
+          const { diagnoses, anaesthetist } = await geIpdProcedureDetail(patientId, config);
+          const labFindings = await getPatientLabFindings(patientId, testOrderTypeUuid, [
+            theatreExportConcepts.haemoglobin,
+            theatreExportConcepts.platelets,
+            theatreExportConcepts.potasium,
+            theatreExportConcepts.chloride,
+            theatreExportConcepts.creatinine,
+            theatreExportConcepts.liverFunctionTests,
+          ]);
           const perOrderDetail = orders?.map((order) => ({
             operation: order?.display || '-',
             operationType:
-              order?.procedures?.[0]?.procedureOrder?.category?.uuid === procedureMinorCategoryConceptUuid
+              (order?.procedures?.[0]?.procedureOrder as unknown as Order)?.category?.uuid ===
+              procedureMinorCategoryConceptUuid
                 ? t('minorAbr', 'A')
-                : order?.procedures?.[0]?.procedureOrder?.category?.uuid === procedureMajorCategoryConceptUuid
+                : (order?.procedures?.[0]?.procedureOrder as unknown as Order)?.category?.uuid ===
+                    procedureMajorCategoryConceptUuid
                   ? t('majorAbr', 'B')
                   : '-',
             remarks: order?.instructions || '-',
+            surgeon:
+              (order?.procedures?.[0]?.encounters?.[0] as Encounter)?.encounterProviders
+                ?.map((provider) => provider?.display?.split(':')?.[0])
+                .join(' & ') || '-',
           }));
           return perOrderDetail?.map((detail) => ({
             patientName,
             ipNo,
             patientGender,
             patientAge,
-            diagnosis: diagnoses.map((d) => d.text).join(', ') || '-',
+            diagnosis: diagnoses,
             operation: detail.operation,
-            labFindings: '-', // Placeholder for lab findings data
-            surgeon: '-', // Placeholder for surgeon data
-            anesthetist: '-', // Placeholder for anesthetist data
+            labFindings: labFindings,
+            surgeon: detail.surgeon,
+            anesthetist: anaesthetist,
             operationType: detail.operationType,
             scrubNurse: '-', // Placeholder for scrub nurse data
             remarks: detail.remarks,
@@ -89,12 +111,18 @@ const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patient
         kind: 'error',
         subtitle: (error as Error)?.message,
       });
+    } finally {
+      setIsExporting(false);
     }
   };
 
   return (
-    <Button kind="ghost" size={responseSize} renderIcon={Export} onClick={handleExport}>
-      {t('exportStandardTheatreList', 'Export Standard Theatre List')}
+    <Button kind="ghost" size={responseSize} renderIcon={Export} onClick={handleExport} disabled={isExporting}>
+      {isExporting ? (
+        <InlineLoading description={t('exporting', 'Exporting...')} />
+      ) : (
+        t('exportStandardTheatreList', 'Export Standard Theatre List')
+      )}
     </Button>
   );
 };

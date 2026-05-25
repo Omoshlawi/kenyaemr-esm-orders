@@ -64,6 +64,28 @@ export const configSchema = {
     _description: 'The procedure major category concept UUID',
     _default: '3798940f-87b8-464e-b36a-17da246f034e',
   },
+  theatreExportConcepts: {
+    _type: Type.Object,
+    _description: 'Standard theatre list lab finding concepts uuids',
+    _default: {
+      haemoglobin: '21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      platelets: '21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      potasium: '21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      chloride: '21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      creatinine: '1011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      liverFunctionTests: '953AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      surgeonName: '166688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      surgeonAsistantOneName: '166688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      surgeonAsistantTwoName: '166688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      scrubNurseName: '166688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      anaesthesistName: '166688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+    },
+  },
+  ipdProcedureFormUuid: {
+    _type: Type.String,
+    _description: 'The UUID of IPD Procedure form',
+    _default: '2b9c2b94-0b03-416a-b312-eef49b42f72c',
+  },
 };
 
 export interface OrderReason {
@@ -90,6 +112,15 @@ export interface ConfigObject {
   procedureResultEncounterRole: string;
   procedureMinorCategoryConceptUuid: string;
   procedureMajorCategoryConceptUuid: string;
+  theatreExportConcepts: {
+    haemoglobin: string;
+    platelets: string;
+    potasium: string;
+    chloride: string;
+    creatinine: string;
+    liverFunctionTests: string;
+  };
+  ipdProcedureFormUuid: string;
 }
 
 export const StringPath =
