@@ -51,7 +51,10 @@ const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patient
                 ? t('female', 'Female')
                 : '-';
           const patientAge = orders?.[0]?.patient?.person?.age || '-';
-          const { diagnoses, anaesthetist } = await geIpdProcedureDetail(patientId, config);
+          const { diagnoses, anaesthetist, scrubNurse, surgeon, remarks } = await geIpdProcedureDetail(
+            patientId,
+            config,
+          );
           const labFindings = await getPatientLabFindings(patientId, testOrderTypeUuid, [
             theatreExportConcepts.haemoglobin,
             theatreExportConcepts.platelets,
@@ -87,8 +90,8 @@ const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patient
             surgeon: detail.surgeon,
             anesthetist: anaesthetist,
             operationType: detail.operationType,
-            scrubNurse: '-', // Placeholder for scrub nurse data
-            remarks: detail.remarks,
+            scrubNurse,
+            remarks,
           }));
         }),
       );

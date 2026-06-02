@@ -43,7 +43,6 @@ export interface ProceduresOrderFormProps {
   patient: fhir.Patient;
   visitContext: Visit;
 }
-usePagination
 export function ProceduresOrderForm({
   initialOrder,
   closeWorkspace,

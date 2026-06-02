@@ -74,11 +74,12 @@ export const configSchema = {
       chloride: '21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
       creatinine: '1011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
       liverFunctionTests: '953AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-      surgeonName: '166688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      surgeonName: '1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
       surgeonAsistantOneName: '166688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-      surgeonAsistantTwoName: '166688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-      scrubNurseName: '166688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-      anaesthesistName: '166688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      surgeonAsistantTwoName: '166691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      scrubNurseName: '166690AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      anaesthesistName: '166692AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+      surgeionRemarks: '163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
     },
   },
   ipdProcedureFormUuid: {
@@ -119,6 +120,12 @@ export interface ConfigObject {
     chloride: string;
     creatinine: string;
     liverFunctionTests: string;
+    surgeonName: string;
+    surgeonAsistantOneName: string;
+    surgeonAsistantTwoName: string;
+    scrubNurseName: string;
+    anaesthesistName: string;
+    surgeionRemarks: string;
   };
   ipdProcedureFormUuid: string;
 }

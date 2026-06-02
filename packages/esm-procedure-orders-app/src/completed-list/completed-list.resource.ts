@@ -1,7 +1,7 @@
 import { openmrsFetch, restBaseUrl, type Visit } from '@openmrs/esm-framework';
 import dayjs from 'dayjs';
 import { type Result } from '../types';
-import { ConfigObject } from '../config-schema';
+import { type ConfigObject } from '../config-schema';
 
 export const getPatientLabFindings = async (patientId: string, orderType: string, concepts: Array<string>) => {
   const activatedOnOrAfterDate = dayjs().startOf('day').toDate().toISOString();
@@ -36,8 +36,24 @@ export const geIpdProcedureDetail = async (patientId: string, config: ConfigObje
         })) || [],
     ) || [];
 
-  const ipdProcedureEncounter = recentVisit?.encounters?.find((encounter) => encounter?.form?.uuid === formUuid);
+  const ipdProcedureEncounter = recentVisit?.encounters?.find(
+    (encounter) => encounter?.form?.uuid === config.ipdProcedureFormUuid,
+  );
   const ipdProcedureObs = ipdProcedureEncounter?.obs || [];
+  const anaesthetist = ipdProcedureObs.find((ob) => ob?.concept?.uuid === config.theatreExportConcepts.anaesthesistName)
+    ?.value as string;
+  const surgeon = ipdProcedureObs.find((ob) => ob?.concept?.uuid === config.theatreExportConcepts.surgeonName)
+    ?.value as string;
+  const assistantOne = ipdProcedureObs.find(
+    (ob) => ob?.concept?.uuid === config.theatreExportConcepts.surgeonAsistantOneName,
+  )?.value as string;
+  const assistantTwo = ipdProcedureObs.find(
+    (ob) => ob?.concept?.uuid === config.theatreExportConcepts.surgeonAsistantTwoName,
+  )?.value as string;
+  const scrubNurse = ipdProcedureObs.find((ob) => ob?.concept?.uuid === config.theatreExportConcepts.scrubNurseName)
+    ?.value as string;
+  const remarks = ipdProcedureObs.find((ob) => ob?.concept?.uuid === config.theatreExportConcepts.surgeionRemarks)
+    ?.value as string;
 
   return {
     diagnoses:
@@ -46,5 +62,8 @@ export const geIpdProcedureDetail = async (patientId: string, config: ConfigObje
         .filter(Boolean)
         ?.join(';') || '--',
     anaesthetist,
+    surgeon: [surgeon, assistantOne, assistantTwo].filter(Boolean).join(' & ') || '--',
+    scrubNurse: scrubNurse || '--',
+    remarks: remarks || '--',
   };
 };
