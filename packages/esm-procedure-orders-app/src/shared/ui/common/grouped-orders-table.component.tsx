@@ -1,4 +1,6 @@
 import { default as React, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { mutate } from 'swr';
 import {
   DataTable,
   Search,
@@ -15,14 +17,12 @@ import {
   Button,
   Pagination,
   Row,
+  useFeatureFlag,
 } from '@carbon/react';
 import { ConfigurableLink, restBaseUrl, useLayoutType, usePagination } from '@openmrs/esm-framework';
 import { CardHeader, usePaginationInfo } from '@openmrs/esm-patient-common-lib';
 import upperCase from 'lodash-es/upperCase';
-import { useTranslation } from 'react-i18next';
-import { mutate } from 'swr';
 import { Renew } from '@carbon/react/icons';
-
 import EmptyState from '../../../empty-state/empty-state-component';
 import ListOrderDetails from './list-order-details.component';
 import { OrdersDateRangePicker } from './orders-date-range-picker';
@@ -31,7 +31,7 @@ import { useSearchGroupedResults } from '../../../hooks/useSearchGroupedResults'
 import { type GroupedOrdersTableProps } from './grouped-procedure-types';
 
 import styles from './grouped-orders-table.scss';
-import ExportStandardTheatreList from '../../../completed-list/export-standard.theatre-list.component';
+import StandardTheatreListAction from '../../../completed-list/standard-theatre-list-action';
 
 const GroupedOrdersTable: React.FC<
   GroupedOrdersTableProps & {
@@ -43,6 +43,7 @@ const GroupedOrdersTable: React.FC<
   const responseSize = useLayoutType() === 'tablet' ? 'md' : 'sm';
   const [currentPageSize] = useState<number>(10);
   const [searchString, setSearchString] = useState<string>('');
+  const isprocedureQueueEnabled = useFeatureFlag('procedureQueues');
 
   function groupOrdersById(orders) {
     if (orders && orders.length > 0) {
@@ -124,8 +125,8 @@ const GroupedOrdersTable: React.FC<
       <div className={styles.widgetCard}>
         <CardHeader title={props?.title}>
           <Row>
-            {props.title === t('completedOrders', 'Completed Orders') && (
-              <ExportStandardTheatreList patientOrders={groupedOrdersByPatient} />
+            {isprocedureQueueEnabled && props.title === t('completedOrders', 'Completed Orders') && (
+              <StandardTheatreListAction patientOrders={groupedOrdersByPatient} />
             )}
             <Button size={responseSize} kind="ghost" renderIcon={Renew} onClick={handleRefresh}>
               {t('refresh', 'Refresh')}

@@ -221,3 +221,9 @@ title {
   color: colors.$gray-70;
   margin-bottom: 0.5rem;
 }
+
+.labFindings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

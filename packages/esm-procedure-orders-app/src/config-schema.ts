@@ -68,12 +68,6 @@ export const configSchema = {
     _type: Type.Object,
     _description: 'Standard theatre list lab finding concepts uuids',
     _default: {
-      haemoglobin: '21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-      platelets: '21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-      potasium: '21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-      chloride: '21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-      creatinine: '1011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-      liverFunctionTests: '953AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
       surgeonName: '1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
       surgeonAsistantOneName: '166688AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
       surgeonAsistantTwoName: '166691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
@@ -114,12 +108,6 @@ export interface ConfigObject {
   procedureMinorCategoryConceptUuid: string;
   procedureMajorCategoryConceptUuid: string;
   theatreExportConcepts: {
-    haemoglobin: string;
-    platelets: string;
-    potasium: string;
-    chloride: string;
-    creatinine: string;
-    liverFunctionTests: string;
     surgeonName: string;
     surgeonAsistantOneName: string;
     surgeonAsistantTwoName: string;

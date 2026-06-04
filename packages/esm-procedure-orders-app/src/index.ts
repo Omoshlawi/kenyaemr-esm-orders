@@ -92,4 +92,11 @@ export const procedureOrderSearchPatientWorkspace = getAsyncLifecycle(
   options,
 );
 
-export const procedureOrderedTabs = getAsyncLifecycle(() => import('./procedures-ordered/procedure-tabs.component'), options);
+export const procedureOrderedTabs = getAsyncLifecycle(
+  () => import('./procedures-ordered/procedure-tabs.component'),
+  options,
+);
+export const standardTheatreList = getAsyncLifecycle(
+  () => import('./completed-list/standard-theatre-list.component'),
+  options,
+);

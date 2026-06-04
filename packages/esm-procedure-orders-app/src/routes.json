@@ -158,6 +158,10 @@
     {
       "name": "print-procedure-report-modal",
       "component": "printProcedureReportModal"
+    },
+    {
+      "name": "standard-theatre-list-modal",
+      "component": "standardTheatreList"
     }
   ],
   "pages": [

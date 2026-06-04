@@ -1,26 +1,21 @@
-import { Button, InlineLoading } from '@carbon/react';
-import { Export } from '@carbon/react/icons';
-import { type Order, showSnackbar, useConfig, useLayoutType, type Encounter } from '@openmrs/esm-framework';
 import React, { useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Button, InlineLoading } from '@carbon/react';
+import { showSnackbar, useConfig, useLayoutType, type Encounter, type Order } from '@openmrs/esm-framework';
 import { type ConfigObject } from '../config-schema';
 import { type Result } from '../types';
 import { geIpdProcedureDetail, getPatientLabFindings } from './completed-list.resource';
 
 type ExportStandardTheatreListProps = {
   patientOrders?: Array<{ patientId: string; orders: Array<Result> }>;
+  onClose?: () => void;
 };
 
-const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patientOrders = [] }) => {
+const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patientOrders = [], onClose }) => {
   const { t } = useTranslation();
   const [isExporting, setIsExporting] = useState(false);
   const config = useConfig<ConfigObject>();
-  const {
-    procedureMajorCategoryConceptUuid,
-    procedureMinorCategoryConceptUuid,
-    testOrderTypeUuid,
-    theatreExportConcepts,
-  } = config;
+  const { procedureMajorCategoryConceptUuid, procedureMinorCategoryConceptUuid, testOrderTypeUuid } = config;
   const responseSize = useLayoutType() === 'tablet' ? 'md' : 'sm';
   const headers = [
     { key: 'patientName', label: t('patientName', 'Patient Name') },
@@ -32,7 +27,6 @@ const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patient
     { key: 'labFindings', label: t('labFindingsExport', "Lab Findings: (HB;Platelets;K;CL;CR;LFT'S)") },
     { key: 'surgeon', label: t('surgeon', 'Surgeon & Ass.Surgeon') },
     { key: 'anesthetist', label: t('anesthetist', 'Anesthetist') },
-    { key: 'operationType', label: t('operationType', 'A/B') },
     { key: 'scrubNurse', label: t('scrubNurse', 'Scrub Nurse') },
     { key: 'remarks', label: t('remarks', 'Remarks') },
   ];
@@ -55,14 +49,7 @@ const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patient
             patientId,
             config,
           );
-          const labFindings = await getPatientLabFindings(patientId, testOrderTypeUuid, [
-            theatreExportConcepts.haemoglobin,
-            theatreExportConcepts.platelets,
-            theatreExportConcepts.potasium,
-            theatreExportConcepts.chloride,
-            theatreExportConcepts.creatinine,
-            theatreExportConcepts.liverFunctionTests,
-          ]);
+          const labFindings = await getPatientLabFindings(patientId, testOrderTypeUuid);
           const perOrderDetail = orders?.map((order) => ({
             operation: order?.display || '-',
             operationType:
@@ -87,9 +74,8 @@ const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patient
             diagnosis: diagnoses,
             operation: detail.operation,
             labFindings: labFindings,
-            surgeon: detail.surgeon,
+            surgeon: surgeon,
             anesthetist: anaesthetist,
-            operationType: detail.operationType,
             scrubNurse,
             remarks,
           }));
@@ -108,6 +94,7 @@ const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patient
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      onClose?.();
     } catch (error) {
       showSnackbar({
         title: t('exportFailed', 'Failed to export the Standard Theatre List. Please try again.'),
@@ -120,12 +107,8 @@ const ExportStandardTheatreList: FC<ExportStandardTheatreListProps> = ({ patient
   };
 
   return (
-    <Button kind="ghost" size={responseSize} renderIcon={Export} onClick={handleExport} disabled={isExporting}>
-      {isExporting ? (
-        <InlineLoading description={t('exporting', 'Exporting...')} />
-      ) : (
-        t('exportStandardTheatreList', 'Export Standard Theatre List')
-      )}
+    <Button kind="primary" size={responseSize} onClick={handleExport} disabled={isExporting}>
+      {isExporting ? <InlineLoading description={t('exporting', 'Exporting...')} /> : t('export', 'Export')}
     </Button>
   );
 };
